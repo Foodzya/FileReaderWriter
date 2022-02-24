@@ -11,7 +11,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("WRITE MENU\n" +
-                "—————————————————————————————\n" +
+                "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n" +
                 "1 -- Write text (only .txt, .rtxt, .etxt, .btxt are applicable)\n" +
                 "2 -- Back to the main menu");
 
@@ -22,6 +22,9 @@ namespace FileReaderWriter.Menu.MenuStates
                     break;
                 case ConsoleKey.D2:
                     _menuContext.PressBack();
+                    break;
+                default: 
+                    _menuContext.ChangeMenuState(new WriteMenuState());
                     break;
             }
         }
@@ -54,7 +57,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("READ OPTIONS\n" +
-                "—————————————————————————————\n" +
+                "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n" +
                 "1 -- To read text from txt\n" +
                 "2 -- To read text from console input\n" +
                 "3 -- Back to the menu");

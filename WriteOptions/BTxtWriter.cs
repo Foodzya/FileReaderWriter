@@ -11,7 +11,7 @@ namespace FileReaderWriter.WriteOptions
         {
             byte[] bytes = Encoding.UTF8.GetBytes(content);
 
-            string result = string.Join(" ", bytes.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
+            string result = string.Join("", bytes.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
 
             try
             {

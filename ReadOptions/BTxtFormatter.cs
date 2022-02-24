@@ -10,7 +10,7 @@ namespace FileReaderWriter.ReadOptions
         {
             List<byte> byteList = new List<byte>();
 
-            for(int i = 8; i < content.Length; i+=8)
+            for(int i = 0; i < content.Length; i+=8)
             {
                 byteList.Add(Convert.ToByte(content.Substring(i, 8), 2));
             }

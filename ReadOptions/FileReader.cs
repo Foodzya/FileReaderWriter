@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using FileReaderWriter.Menu;
+using FileReaderWriter.Menu.MenuStates;
 
 namespace FileReaderWriter.ReadOptions
 {
@@ -57,7 +59,19 @@ namespace FileReaderWriter.ReadOptions
 
         private string FormatContent(string content)
         {
-            return _formatter.FormatContent(content);
+            if (_formatter != null) 
+            {
+                return _formatter.FormatContent(content);
+            }
+            else 
+            {
+                Console.WriteLine("\nAn error occured during reading the file. \nPlease check out the specified file extension!\nPress any button to continue..");
+                Console.ReadKey();
+                MenuContext menuContext = new MenuContext();
+                menuContext.ChangeMenuState(new MainMenuState());
+            }
+
+            return string.Empty;
         }
     }
 }

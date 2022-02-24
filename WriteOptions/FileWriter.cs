@@ -12,11 +12,6 @@ namespace FileReaderWriter.WriteOptions
 
         }
 
-        public FileWriter(IWriteAction writer)
-        {
-            _writer = writer;
-        }
-
         public void WriteToFile(string content, string targetFile)
         {
             ValidateFileExtension(targetFile);
