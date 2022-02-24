@@ -26,7 +26,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("MAIN MENU\n" +
-                "�����������������������������\n" +
+                "—————————————————————————————\n" +
                 "1 -- Read from a file with specific type to txt/console (only txt, rtxt, etxt, btxt)\n" +
                 "2 -- Write from txt/console to a file with specific type (only txt)\n" +
                 "3 -- Quit the application");

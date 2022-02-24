@@ -11,7 +11,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("WRITE MENU\n" +
-                "�����������������������������\n" +
+                "—————————————————————————————\n" +
                 "1 -- Write text (only .txt, .rtxt, .etxt, .btxt are applicable)\n" +
                 "2 -- Back to the main menu");
 
@@ -57,7 +57,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("READ OPTIONS\n" +
-                "�����������������������������\n" +
+                "—————————————————————————————\n" +
                 "1 -- To read text from txt\n" +
                 "2 -- To read text from console input\n" +
                 "3 -- Back to the menu");

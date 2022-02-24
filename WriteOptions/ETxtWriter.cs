@@ -2,6 +2,7 @@
 using System.IO;
 using FileReaderWriter.Menu;
 using FileReaderWriter.Menu.MenuStates;
+using FileReaderWriter;
 
 namespace FileReaderWriter.WriteOptions
 {
@@ -37,6 +38,7 @@ namespace FileReaderWriter.WriteOptions
             "3 -- Back to the menu\n");
 
             MenuContext menuContext = new MenuContext();
+            CipherEncryptor encryptor = new CipherEncryptor();
 
             ConsoleKey direction = Console.ReadKey().Key;
 
@@ -48,11 +50,11 @@ namespace FileReaderWriter.WriteOptions
             {
                 case ConsoleKey.D1:
                     shift = GetCipherShift();
-                    result = LeftShiftCipher(content, shift);
+                    result = encryptor.LeftShiftCipher(content, shift);
                     break;
                 case ConsoleKey.D2:
                     shift = GetCipherShift();
-                    result = RightShiftCipher(content, shift);
+                    result = encryptor.RightShiftCipher(content, shift);
                     break;
                 case ConsoleKey.D3:
                     menuContext.ChangeMenuState(new WriteMenuState());
@@ -95,31 +97,6 @@ namespace FileReaderWriter.WriteOptions
             }
 
            return shift;
-        }
-
-        private static char Cipher(char ch, int shift)
-        {
-            if (!char.IsLetter(ch))
-                return ch;
-
-            char offset = char.IsUpper(ch) ? 'A' : 'a';
-            
-            return (char)((((ch + shift) - offset) % 26) + offset);
-        }
-
-        public static string RightShiftCipher(string content, int shift)
-        {
-            string output = string.Empty;
-
-            foreach (char ch in content)
-                output += Cipher(ch, shift);
-
-            return output;
-        }
-
-        public static string LeftShiftCipher(string content, int shift)
-        {
-            return RightShiftCipher(content, 26 - shift);
         }
     }
 }

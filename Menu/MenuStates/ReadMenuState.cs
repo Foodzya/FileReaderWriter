@@ -12,7 +12,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("READ MENU\n" +
-                "�����������������������������\n" +
+                "—————————————————————————————\n" +
                 "1 -- Read from (only txt, rtxt, etxt, btxt)\n" +
                 "2 -- Back to the main menu");
 
