@@ -17,7 +17,7 @@ namespace FileReaderWriter.WriteOptions
             catch (UnauthorizedAccessException e)
             {
                 Console.WriteLine(e.Message + "\nPlease specify txt file for writing there");
-            }                        
+            }
         }
     }
 }

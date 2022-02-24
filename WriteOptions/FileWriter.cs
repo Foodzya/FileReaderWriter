@@ -18,8 +18,9 @@ namespace FileReaderWriter.WriteOptions
 
             _writer.WriteToFile(content, targetFile);
 
-            Console.WriteLine("Success!\n" +
+            Console.WriteLine("File has been successfully saved!\n" +
                 "Press anything to continue...");
+
             Console.ReadKey();
         }
 
@@ -38,16 +39,17 @@ namespace FileReaderWriter.WriteOptions
                     SetWriter(new TxtWriter());
                     break;
                 case ".rtxt":
-                    SetWriter(new RTxtWriter());
+                    SetWriter(new RtxtWriter());
                     break;
                 case ".etxt":
-                    SetWriter(new ETxtWriter());
+                    SetWriter(new EtxtWriter());
                     break;
                 case ".btxt":
-                    SetWriter(new BTxtWriter());
+                    SetWriter(new BtxtWriter());
                     break;
                 default:
-                    Console.WriteLine("This file type is unsupported.");
+                    Console.WriteLine("This file type is unsupported.\n" +
+                        "Press anything to continue..");
                     break;
             }
         }

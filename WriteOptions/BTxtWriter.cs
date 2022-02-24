@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FileReaderWriter.WriteOptions
 {
-    public class BTxtWriter : IWriteAction
+    public class BtxtWriter : IWriteAction
     {
         public void WriteToFile(string content, string targetFile)
         {

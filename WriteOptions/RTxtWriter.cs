@@ -3,7 +3,7 @@ using System.IO;
 
 namespace FileReaderWriter.WriteOptions
 {
-    public class RTxtWriter : IWriteAction
+    public class RtxtWriter : IWriteAction
     {
         public void WriteToFile(string content, string targetFile)
         {

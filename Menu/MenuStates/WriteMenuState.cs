@@ -23,7 +23,7 @@ namespace FileReaderWriter.Menu.MenuStates
                 case ConsoleKey.D2:
                     _menuContext.PressBack();
                     break;
-                default: 
+                default:
                     _menuContext.ChangeMenuState(new WriteMenuState());
                     break;
             }
@@ -60,35 +60,54 @@ namespace FileReaderWriter.Menu.MenuStates
                 "—————————————————————————————\n" +
                 "1 -- To read text from txt\n" +
                 "2 -- To read text from console input\n" +
-                "3 -- Back to the menu");
+                "3 -- Back to the menu\n");
 
             switch (Console.ReadKey().Key)
             {
                 case ConsoleKey.D1:
                     Console.Clear();
-                    Console.WriteLine("Specify path to the txt file..\n"
-                        + @"Example: C:\ExampleFolder\example.txt"
-                        + "Type q to return to write menu");
-                    string path = Console.ReadLine();
-                    if (File.Exists(path))
-                        return File.ReadAllText(path);
-                    else if (path.ToLower() == "q")
-                        _menuContext.ChangeMenuState(new WriteMenuState());
-                    else
-                        GetSourceText();
-                    break;
+                    return GetTextFromTxtFile();
                 case ConsoleKey.D2:
                     Console.Clear();
                     Console.Write("Your text: ");
-                    string content = Console.ReadLine();
-                    return content;
+                    return Console.ReadLine();
                 case ConsoleKey.D3:
                     _menuContext.DisplayMenu();
                     break;
                 default:
-                    Console.WriteLine("An error occured. Try again.");
+                    Console.WriteLine("An error occured.\n" +
+                        "Press any button to try again..");
+                    Console.ReadKey();
                     GetSourceText();
                     break;
+            }
+
+            return string.Empty;
+        }
+
+        private string GetTextFromTxtFile()
+        {
+            Console.WriteLine("Specify path to the txt file..\n"
+                + @"Example: C:\ExampleFolder\example.txt"
+                + "Type q to return to write menu");
+
+            string path = Console.ReadLine();
+
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            else if (path.ToLower() == "q")
+                _menuContext.ChangeMenuState(new WriteMenuState());
+            else
+            {
+                Console.WriteLine("An error occured\n" +
+                    "Please check if specified txt file exists.\n" +
+                    "Press any button to try again.\n");
+
+                Console.ReadKey();
+
+                GetTextFromTxtFile();
             }
 
             return string.Empty;
@@ -108,12 +127,15 @@ namespace FileReaderWriter.Menu.MenuStates
                 return path;
             }
             else if (path.ToLower() == "q")
+            {
                 _menuContext.ChangeMenuState(new MainMenuState());
+            }
             else
             {
                 Console.WriteLine("An error occured\n" +
                     "1 -- Try again\n" +
-                    "press any -- write menu");
+                    "Press any button to return to the menu");
+
                 if (Console.ReadKey().Key == ConsoleKey.D1)
                 {
                     PathToTargetFile();

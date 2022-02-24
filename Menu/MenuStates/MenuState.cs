@@ -1,6 +1,6 @@
-namespace FileReaderWriter.Menu.MenuStates 
+namespace FileReaderWriter.Menu.MenuStates
 {
-    abstract public class MenuState 
+    abstract public class MenuState
     {
         protected MenuContext _menuContext;
         public abstract void ReadFromSpecificFile();

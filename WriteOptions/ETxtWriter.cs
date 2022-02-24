@@ -6,7 +6,7 @@ using FileReaderWriter;
 
 namespace FileReaderWriter.WriteOptions
 {
-    public class ETxtWriter : IWriteAction
+    public class EtxtWriter : IWriteAction
     {
         public void WriteToFile(string content, string targetFile)
         {
@@ -21,15 +21,23 @@ namespace FileReaderWriter.WriteOptions
                         sw.WriteLine(result);
                     }
                 }
-            catch (UnauthorizedAccessException e)
+                catch (UnauthorizedAccessException e)
                 {
-                    Console.WriteLine(e.Message + "\nPlease specify txt file for writing there");
+                    Console.WriteLine(e.Message + "\nPlease specify etxt file for writing there");
                 }
             }
         }
 
         private string CipherDirectionMenu(string content)
         {
+            MenuContext menuContext = new MenuContext();
+
+            CipherEncryptor encryptor = new CipherEncryptor();
+
+            string result = string.Empty;
+
+            int shift;
+
             Console.Clear();
 
             Console.WriteLine("Select encription direction:\n" +
@@ -37,14 +45,7 @@ namespace FileReaderWriter.WriteOptions
             "2 -- Right\n" +
             "3 -- Back to the menu\n");
 
-            MenuContext menuContext = new MenuContext();
-            CipherEncryptor encryptor = new CipherEncryptor();
-
             ConsoleKey direction = Console.ReadKey().Key;
-
-            string result = string.Empty;
-
-            int shift;
 
             switch (direction)
             {
@@ -59,10 +60,13 @@ namespace FileReaderWriter.WriteOptions
                 case ConsoleKey.D3:
                     menuContext.ChangeMenuState(new WriteMenuState());
                     break;
-                default: 
-                    Console.WriteLine("An error occured");
+                default:
+                    Console.WriteLine("An error occured\n" +
+                        "Try again..\n" +
+                        "To continue press any button.");
+                    Console.ReadKey();
                     CipherDirectionMenu(content);
-                    break;                    
+                    break;
             }
 
             return result;
@@ -72,31 +76,31 @@ namespace FileReaderWriter.WriteOptions
         {
             MenuContext menuContext = new MenuContext();
 
+            int shift = 0;
+
             Console.WriteLine("\nCIPHER SHIFT MENU\n" +
-            "Specify encription shift:\n" + 
+            "Specify encription shift:\n" +
             "Enter Q to go to the previous menu\n");
-            
+
             string shiftInput = Console.ReadLine();
 
             if (shiftInput.ToLower() == "q")
                 menuContext.ChangeMenuState(new WriteMenuState());
-                
-            int shift = 0;
 
-            try 
+            try
             {
                 shift = Int32.Parse(shiftInput);
             }
-            catch(FormatException e)
+            catch (FormatException e)
             {
                 Console.Clear();
-                
+
                 Console.WriteLine(e);
 
                 GetCipherShift();
             }
 
-           return shift;
+            return shift;
         }
     }
 }

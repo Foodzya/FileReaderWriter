@@ -16,10 +16,10 @@ namespace FileReaderWriter.Menu
         public void ChangeMenuState(MenuState menuState)
         {
             _menuState = menuState;
-            
+
             _menuState.SetMenuContext(this);
-            
-            _menuState.DisplayMenu();     
+
+            _menuState.DisplayMenu();
         }
 
         public void ReadFromSpecificFile()

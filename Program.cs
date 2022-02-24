@@ -1,4 +1,4 @@
-﻿namespace FileReaderWriter 
+﻿namespace FileReaderWriter
 {
     public class Program
     {
@@ -6,8 +6,7 @@
         {
             Launcher launcher = new Launcher();
 
-            launcher.LaunchMenu();        
+            launcher.LaunchMenu();
         }
     }
 }
-

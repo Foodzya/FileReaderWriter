@@ -1,6 +1,6 @@
 ﻿namespace FileReaderWriter.ReadOptions
 {
-    public class TxtFormatter : IReadFormatter
+    public class TxtReader : IFileReader
     {
         public string FormatContent(string content)
         {

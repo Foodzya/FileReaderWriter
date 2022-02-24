@@ -13,7 +13,7 @@ namespace FileReaderWriter.Menu.MenuStates
 
             Console.WriteLine("READ MENU\n" +
                 "—————————————————————————————\n" +
-                "1 -- Read from (only txt, rtxt, etxt, btxt)\n" +
+                "1 -- Read from file with specific format (only txt, rtxt, etxt, btxt)\n" +
                 "2 -- Back to the main menu");
 
             switch (Console.ReadKey().Key)
@@ -27,7 +27,6 @@ namespace FileReaderWriter.Menu.MenuStates
                 default:
                     _menuContext.ChangeMenuState(new ReadMenuState());
                     break;
-
             }
         }
 
@@ -51,35 +50,37 @@ namespace FileReaderWriter.Menu.MenuStates
             {
                 string content = fileReader.ReadContentFromFile(path);
 
-                WriteTo(content);
+                WriteContentTo(content);
 
                 _menuContext.ChangeMenuState(new MainMenuState());
             }
             else
-            { 
-                _menuContext.ChangeMenuState(new ReadMenuState());
+            {
+                Console.WriteLine("An error occured. \n" +
+                    "Press any button to try again..\n");
+
+                Console.ReadKey();
+
+                this.ReadFromSpecificFile();
             }
         }
 
-        private void WriteTo(string content)
+        private void WriteContentTo(string content)
         {
+            string targetFile = string.Empty;
+
             Console.WriteLine("\nWhere would you like to write text?\n" +
             "1 -- Txt file\n" +
-            "2 -- Console\n" + 
+            "2 -- Console\n" +
             "3 -- Back to the menu\n");
 
-            string targetFile = string.Empty;
             ConsoleKey key = Console.ReadKey().Key;
 
             switch (key)
             {
                 case ConsoleKey.D1:
                     Console.Clear();
-                    Console.WriteLine("Specify destination txt file..\n" +
-                    "Enter Q to return to the menu..");
-                    targetFile = Console.ReadLine();
-                    if (targetFile.ToLower() == "q")
-                        _menuContext.ChangeMenuState(new ReadMenuState());
+                    targetFile = GetTargetFile();
                     break;
                 case ConsoleKey.D2:
                     Console.WriteLine($"\nHere is the final result: {content}\n" +
@@ -95,18 +96,43 @@ namespace FileReaderWriter.Menu.MenuStates
                     break;
             }
 
-                if (File.Exists(targetFile))
-                {
-                    TxtWriter txtWriter = new TxtWriter();
-                    txtWriter.WriteToFile(content, targetFile);
-                }
-                else 
-                {
-                    _menuContext.ChangeMenuState(new ReadMenuState());
-                }
-                
-                Console.WriteLine("Press any button to continue...");
-                Console.ReadKey();
+            if (File.Exists(targetFile))
+            {
+                TxtWriter txtWriter = new TxtWriter();
+                txtWriter.WriteToFile(content, targetFile);
+            }
+            else
+            {
+                _menuContext.ChangeMenuState(new ReadMenuState());
+            }
+
+            Console.WriteLine("Press any button to continue...");
+            Console.ReadKey();
+        }
+
+        private string GetTargetFile()
+        {
+            Console.WriteLine("Specify destination txt file..\n" +
+                "Enter Q to return to the menu..");
+
+            string targetFile = Console.ReadLine();
+
+            if (File.Exists(targetFile))
+            {
+                return targetFile;
+            }
+            else if (targetFile.ToLower() == "q")
+            {
+                _menuContext.ChangeMenuState(new ReadMenuState());
+            }
+            else
+            {
+                Console.WriteLine("You've specified incorrect path. Try again..\n");
+
+                GetTargetFile();
+            }
+
+            return string.Empty;
         }
 
         public override void WriteToSpecificFile()

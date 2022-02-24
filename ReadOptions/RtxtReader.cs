@@ -2,7 +2,7 @@
 
 namespace FileReaderWriter.ReadOptions
 {
-    public class RTxtFormatter : IReadFormatter
+    public class RtxtReader : IFileReader
     {
         public string FormatContent(string content)
         {

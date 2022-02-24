@@ -7,21 +7,21 @@ namespace FileReaderWriter.ReadOptions
 {
     public class FileReader
     {
-        private IReadFormatter _formatter;
+        private IFileReader _reader;
 
         public FileReader()
         {
 
         }
 
-        public FileReader(IReadFormatter formatter)
+        public FileReader(IFileReader reader)
         {
-            _formatter = formatter;
+            _reader = reader;
         }
 
-        private void SetFormatter(IReadFormatter formatter)
+        private void SetReader(IFileReader reader)
         {
-            _formatter = formatter;
+            _reader = reader;
         }
 
         public void ValidateFileExtension(string path)
@@ -31,19 +31,21 @@ namespace FileReaderWriter.ReadOptions
             switch (extension)
             {
                 case ".txt":
-                    SetFormatter(new TxtFormatter());
+                    SetReader(new TxtReader());
                     break;
                 case ".rtxt":
-                    SetFormatter(new RTxtFormatter());
+                    SetReader(new RtxtReader());
                     break;
                 case ".etxt":
-                    SetFormatter(new ETxtFormatter());
+                    SetReader(new EtxtReader());
                     break;
                 case ".btxt":
-                    SetFormatter(new BTxtFormatter());
+                    SetReader(new BtxtReader());
                     break;
                 default:
-                    Console.WriteLine("This file type is unsupported.");
+                    Console.WriteLine("This file type is unsupported.\n" +
+                        "Press any button to continue...");
+                    Console.ReadKey();
                     break;
             }
         }
@@ -59,15 +61,18 @@ namespace FileReaderWriter.ReadOptions
 
         private string FormatContent(string content)
         {
-            if (_formatter != null) 
+            if (_reader != null)
             {
-                return _formatter.FormatContent(content);
+                return _reader.FormatContent(content);
             }
-            else 
+            else
             {
                 Console.WriteLine("\nAn error occured during reading the file. \nPlease check out the specified file extension!\nPress any button to continue..");
+
                 Console.ReadKey();
+
                 MenuContext menuContext = new MenuContext();
+
                 menuContext.ChangeMenuState(new MainMenuState());
             }
 

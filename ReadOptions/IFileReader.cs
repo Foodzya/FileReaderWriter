@@ -1,6 +1,6 @@
 ﻿namespace FileReaderWriter.ReadOptions
 {
-    public interface IReadFormatter
+    public interface IFileReader
     {
         public string FormatContent(string content);
     }

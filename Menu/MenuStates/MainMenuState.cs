@@ -6,10 +6,7 @@ namespace FileReaderWriter.Menu.MenuStates
     {
         public override void PressBack()
         {
-            Console.WriteLine("Would you like to quit the application?\n" +
-                "If so, press Q");
-            if (Console.ReadKey().Key == ConsoleKey.Q)
-                Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         public override void ReadFromSpecificFile()
@@ -31,7 +28,7 @@ namespace FileReaderWriter.Menu.MenuStates
                 "2 -- Write from txt/console to a file with specific type (only txt)\n" +
                 "3 -- Quit the application");
 
-             switch (Console.ReadKey().Key)
+            switch (Console.ReadKey().Key)
             {
                 case ConsoleKey.D1:
                     _menuContext.ChangeMenuState(new ReadMenuState());
@@ -40,7 +37,7 @@ namespace FileReaderWriter.Menu.MenuStates
                     _menuContext.ChangeMenuState(new WriteMenuState());
                     break;
                 case ConsoleKey.D3:
-                    Environment.Exit(0);
+                    _menuContext.PressBack();
                     break;
                 default:
                     _menuContext.ChangeMenuState(new MainMenuState());
