@@ -50,7 +50,8 @@ namespace FileReaderWriter.Menu.MenuStates
             {
                 string content = fileReader.ReadContentFromFile(path);
 
-                WriteContentTo(content);
+                if (content != null)
+                    WriteContentTo(content);
 
                 _menuContext.ChangeMenuState(new MainMenuState());
             }

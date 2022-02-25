@@ -8,58 +8,57 @@ namespace FileReaderWriter.ReadOptions
     {
         public string FormatContent(string content)
         {
-            return CipherDirectionMenu(content);
+            return CaesarCipherDirectionMenu(content);
         }
 
-        private string CipherDirectionMenu(string content)
+        private string CaesarCipherDirectionMenu(string content)
         {
             MenuContext menuContext = new MenuContext();
 
-            CipherEncryptor encryptor = new CipherEncryptor();
+            CaesarEncryptor decryptor = new CaesarEncryptor();
 
-            ConsoleKey direction = Console.ReadKey().Key;
+            string decryptionResult = string.Empty;
 
-            string result = string.Empty;
-
-            int shift;
+            int decryptionShift;
 
             Console.Clear();
 
-            Console.WriteLine("Select encryption direction:\n" +
+            Console.WriteLine("Select decryption direction:\n" +
             "1 -- Left\n" +
             "2 -- Right\n" +
             "3 -- Back to the menu\n");
+            
+            ConsoleKey direction = Console.ReadKey().Key;
 
             switch (direction)
             {
                 case ConsoleKey.D1:
-                    shift = GetCipherShift();
-                    result = encryptor.LeftShiftCipher(content, shift);
+                    decryptionShift = GetCaesarCipherShift();
+                    decryptionResult = decryptor.LeftShiftCipher(content, decryptionShift);
                     break;
                 case ConsoleKey.D2:
-                    shift = GetCipherShift();
-                    result = encryptor.RightShiftCipher(content, shift);
+                    decryptionShift = GetCaesarCipherShift();
+                    decryptionResult = decryptor.RightShiftCipher(content, decryptionShift);
                     break;
                 case ConsoleKey.D3:
                     menuContext.ChangeMenuState(new ReadMenuState());
                     break;
                 default:
-                    Console.WriteLine("An error occured");
-                    CipherDirectionMenu(content);
+                    CaesarCipherDirectionMenu(content);
                     break;
             }
 
-            return result;
+            return decryptionResult;
         }
 
-        private int GetCipherShift()
+        private int GetCaesarCipherShift()
         {
             MenuContext menuContext = new MenuContext();
             
-            int shift = 0;
+            int decryptionShift = 0;
 
-            Console.WriteLine("\nCIPHER SHIFT MENU\n" +
-            "Specify encription shift:\n" +
+            Console.WriteLine("\nCAESAR CIPHER SHIFT MENU\n" +
+            "Specify decryption shift:\n" +
             "Enter Q to go to the previous menu\n");
 
             string shiftInput = Console.ReadLine();
@@ -70,7 +69,7 @@ namespace FileReaderWriter.ReadOptions
 
             try
             {
-                shift = Int32.Parse(shiftInput);
+                decryptionShift = int.Parse(shiftInput);
             }
             catch (FormatException e)
             {
@@ -78,10 +77,10 @@ namespace FileReaderWriter.ReadOptions
 
                 Console.WriteLine(e);
 
-                GetCipherShift();
+                GetCaesarCipherShift();
             }
 
-            return shift;
+            return decryptionShift;
         }
     }
 }

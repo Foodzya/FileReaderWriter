@@ -1,6 +1,6 @@
 namespace FileReaderWriter
 {
-    public class CipherEncryptor
+    public class CaesarEncryptor
     {
         public string RightShiftCipher(string content, int shift)
         {
@@ -14,17 +14,21 @@ namespace FileReaderWriter
 
         public string LeftShiftCipher(string content, int shift)
         {
-            return RightShiftCipher(content, 26 - shift);
+            const int totalNumOfLetters = 26;
+
+            return RightShiftCipher(content, totalNumOfLetters - shift);
         }
 
         private char Cipher(char ch, int shift)
         {
+            const int totalNumOfLetters = 26;
+
             if (!char.IsLetter(ch))
                 return ch;
 
             char offset = char.IsUpper(ch) ? 'A' : 'a';
 
-            return (char)((((ch + shift) - offset) % 26) + offset);
+            return (char)((((ch + shift) - offset) % totalNumOfLetters) + offset);
         }
 
     }

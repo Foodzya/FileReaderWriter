@@ -32,7 +32,7 @@ namespace FileReaderWriter.WriteOptions
         {
             MenuContext menuContext = new MenuContext();
 
-            CipherEncryptor encryptor = new CipherEncryptor();
+            CaesarEncryptor encryptor = new CaesarEncryptor();
 
             string result = string.Empty;
 
