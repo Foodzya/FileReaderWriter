@@ -12,6 +12,7 @@
 *.sln.docstates
 *.csproj
 .vscode/
+Properties/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
