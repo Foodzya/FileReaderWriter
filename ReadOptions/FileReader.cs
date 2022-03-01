@@ -9,25 +9,15 @@ namespace FileReaderWriter.ReadOptions
     {
         private IFileReader _reader;
 
-        public FileReader()
-        {
-
-        }
-
-        public FileReader(IFileReader reader)
-        {
-            _reader = reader;
-        }
-
         private void SetReader(IFileReader reader)
         {
             _reader = reader;
         }
 
-        public void ValidateFileExtension(string path)
+        public void SetReaderByFileFormat(string path)
         {
             string extension = Path.GetExtension(path);
-
+            
             switch (extension)
             {
                 case ".txt":
@@ -52,7 +42,7 @@ namespace FileReaderWriter.ReadOptions
 
         public string ReadContentFromFile(string path)
         {
-            ValidateFileExtension(path);
+            SetReaderByFileFormat(path);
 
             string content = File.ReadAllText(path);
 

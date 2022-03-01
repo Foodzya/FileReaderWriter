@@ -41,7 +41,7 @@ namespace FileReaderWriter.Menu.MenuStates
 
         public override void WriteToSpecificFile()
         {
-            string? content = GetSourceText();
+            string content = GetSourceText();
 
             string targetFile = PathToTargetFile();
 

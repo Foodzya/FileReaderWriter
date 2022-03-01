@@ -9,11 +9,11 @@ namespace FileReaderWriter.WriteOptions
         {
             if (args[0] == "--bulk")
             {
-                string targetPath = string.Empty;
+                string targetDirectory = string.Empty;
 
                 string fileFormat = string.Empty;
 
-                FileInfo[] txtFiles;
+                FileInfo[] txtFiles = null;
 
                 for (int i = 1; i < args.Length; i++)
                 {
@@ -25,7 +25,7 @@ namespace FileReaderWriter.WriteOptions
                             txtFiles = GetTxtFilesFromSourcePath(sourceArg);
                             break;
                         case string targetArg when targetArg.Contains("--target="):
-                            targetPath = GetTargetDirectory(targetArg);
+                            targetDirectory = GetTargetDirectory(targetArg);
                             break;
                         case string formatArg when formatArg.Contains("--format="):
                             fileFormat = GetTargetFileFormat(formatArg);
@@ -35,6 +35,8 @@ namespace FileReaderWriter.WriteOptions
                             break;
                     }
                 }
+
+                WriteFromTxtFilesToNew(txtFiles, targetDirectory, fileFormat);
             }
             else
             {
@@ -42,11 +44,29 @@ namespace FileReaderWriter.WriteOptions
             }
         }
 
-        private void WriteFromTxtFilesToNew(FileInfo[] txtFiles, string targetPath, string fileFormat)
+        private void WriteFromTxtFilesToNew(FileInfo[] txtFiles, string targetDirectory, string fileFormat)
         {
+            FileWriter fileWriter = new FileWriter();
+
             foreach (FileInfo txtFile in txtFiles)
             {
+                try
+                {
+                    using (StreamReader sr = txtFile.OpenText())
+                    {
+                        string txtFileContent = sr.ReadToEnd();
 
+                        string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
+
+                        string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
+
+                        fileWriter.WriteToFile(txtFileContent, targetFile);
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
 

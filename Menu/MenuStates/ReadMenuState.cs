@@ -57,8 +57,8 @@ namespace FileReaderWriter.Menu.MenuStates
             }
             else
             {
-                Console.WriteLine("An error occured. \n" +
-                    "Press any button to try again..\n");
+                Console.WriteLine("\nWrong path or file doesn't exist. Try again\n" +
+                    "Press any button to continue..\n");
 
                 Console.ReadKey();
 

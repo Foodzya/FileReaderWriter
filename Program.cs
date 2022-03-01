@@ -8,13 +8,15 @@ namespace FileReaderWriter
     {
         public static void Main(string[] args)
         {
+            int requiredArgs = 4;
+
             if (args.Length == 0)
             {
                 Launcher launcher = new Launcher();
 
                 launcher.LaunchMenu();
             }
-            else if (args.Length == 4)
+            else if (args.Length >= requiredArgs)
             {
                 CommandLineWriter cmWriter = new CommandLineWriter();
 
