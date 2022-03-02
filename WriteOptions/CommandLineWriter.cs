@@ -1,13 +1,26 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FileReaderWriter.WriteOptions
 {
     public class CommandLineWriter
     {
+        private List<string> allowedArguments = new List<string>
+        {
+            "--interactive",
+            "--bulk",
+            "--source=",
+            "--target=",
+            "--format=",
+            "--shift=",
+            "--direction="
+        };
+
         public void WriteFromCommandLine(string[] args)
         {
-            if (args[0] == "--bulk")
+            if (Array.Exists(args, arg => arg == "--bulk"))
             {
                 string targetDirectory = string.Empty;
 
@@ -15,11 +28,11 @@ namespace FileReaderWriter.WriteOptions
 
                 FileInfo[] txtFiles = null;
 
-                for (int i = 1; i < args.Length; i++)
+                for (int i = 0; i < args.Length; i++)
                 {
-                    string command = args[i];
+                    string argument = args[i];
 
-                    switch (command)
+                    switch (argument)
                     {
                         case string sourceArg when sourceArg.Contains("--source="):
                             txtFiles = GetTxtFilesFromSourcePath(sourceArg);
@@ -28,15 +41,16 @@ namespace FileReaderWriter.WriteOptions
                             targetDirectory = GetTargetDirectory(targetArg);
                             break;
                         case string formatArg when formatArg.Contains("--format="):
-                            fileFormat = GetTargetFileFormat(formatArg);
+                            fileFormat = GetTargetFileFormat(formatArg, args);
                             break;
                         default:
-                            Console.WriteLine("Command-line contains unknown argument(-s)");
+                            if (!allowedArguments.Any(arg => argument.Contains(arg)))
+                                throw new Exception("Unknown argument!");
                             break;
                     }
                 }
 
-                WriteFromTxtFilesToNew(txtFiles, targetDirectory, fileFormat);
+                WriteFromTxtFilesToNew(txtFiles, args, targetDirectory, fileFormat);
             }
             else
             {
@@ -44,30 +58,128 @@ namespace FileReaderWriter.WriteOptions
             }
         }
 
-        private void WriteFromTxtFilesToNew(FileInfo[] txtFiles, string targetDirectory, string fileFormat)
+        private void WriteFromTxtFilesToNew(FileInfo[] txtFiles, string[] args, string targetDirectory, string fileFormat)
         {
             FileWriter fileWriter = new FileWriter();
+            TxtWriter txtWriter = new TxtWriter();
 
-            foreach (FileInfo txtFile in txtFiles)
+            if (fileFormat == ".etxt")
             {
-                try
+                if (Array.Exists(args, arg => arg.Contains("--shift=")) && Array.Exists(args, arg => arg.Contains("--direction=")))
                 {
-                    using (StreamReader sr = txtFile.OpenText())
+                    string argument = string.Empty;
+                    int shift = 0;
+                    string direction = string.Empty;
+
+                    CaesarEncryptor caesarEncryptor = new CaesarEncryptor();
+
+                    for (int i = 1; i < args.Length; i++)
                     {
-                        string txtFileContent = sr.ReadToEnd();
+                        argument = args[i];
 
-                        string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
+                        switch (argument)
+                        {
+                            case string encryptorShiftArg when encryptorShiftArg.Contains("--shift="):
+                                shift = GetCaesarEncryptorShift(encryptorShiftArg);
+                                break;
+                            case string encryptorDirectionArg when encryptorDirectionArg.Contains("--direction="):
+                                direction = GetCaesarEncryptorDirection(encryptorDirectionArg);
+                                break;
+                        }
+                    }
 
-                        string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
+                    foreach (FileInfo txtFile in txtFiles)
+                    {
+                        try
+                        {
+                            using (StreamReader sr = txtFile.OpenText())
+                            {
+                                string txtFileContent = sr.ReadToEnd();
 
-                        fileWriter.WriteToFile(txtFileContent, targetFile);
+                                string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
+
+                                string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
+
+                                string formattedContent = string.Empty;
+
+                                if (direction == "left")
+                                    formattedContent = caesarEncryptor.LeftShiftCipher(txtFileContent, shift);
+                                else if (direction == "right")
+                                    formattedContent = caesarEncryptor.RightShiftCipher(txtFileContent, shift);
+
+                                txtWriter.WriteToFile(formattedContent, targetFile);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
                     }
                 }
-                catch (IOException e)
+                else
                 {
-                    Console.WriteLine(e.Message);
+                    throw new IOException("Command line must contain --shift=<encryptor_shift> and --direction=<encryptor_direction> arguments along with .etxt file format");
                 }
             }
+            else
+            {
+                foreach (FileInfo txtFile in txtFiles)
+                {
+                    try
+                    {
+                        using (StreamReader sr = txtFile.OpenText())
+                        {
+                            string txtFileContent = sr.ReadToEnd();
+
+                            string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
+
+                            string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
+
+                            fileWriter.WriteToFile(txtFileContent, targetFile);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
+        }
+
+        private string GetCaesarEncryptorDirection(string encryptorDirectionArgument)
+        {
+            int directionIndex = encryptorDirectionArgument.IndexOf('=') + 1;
+
+            string direction = encryptorDirectionArgument.Substring(directionIndex);
+
+            if (direction == "right" || direction == "left")
+            {
+                return direction;
+            }
+            else
+            {
+                throw new ArgumentException("--direction argument can have only 'right' or 'left' values");
+            }
+        }
+
+        private int GetCaesarEncryptorShift(string encryptorShiftArgument)
+        {
+            int shiftIndex = encryptorShiftArgument.IndexOf('=') + 1;
+
+            int shift = 0;
+
+            string shiftAsString = encryptorShiftArgument.Substring(shiftIndex);
+
+            try
+            {
+                shift = int.Parse(shiftAsString);
+            }
+            catch (FormatException exception)
+            {
+                Console.WriteLine("Incorrect shift argument\n" + exception);
+            }
+
+            return shift;
         }
 
         private FileInfo[] GetTxtFilesFromSourcePath(string sourceArgument)
@@ -102,13 +214,13 @@ namespace FileReaderWriter.WriteOptions
             {
                 return targetPath;
             }
-            else 
+            else
             {
                 throw new IOException("Target directory doesn't exist");
             }
         }
 
-        private string GetTargetFileFormat(string formatArgument)
+        private string GetTargetFileFormat(string formatArgument, string[] args)
         {
             int formatIndex = formatArgument.IndexOf('=') + 1;
 
@@ -117,5 +229,4 @@ namespace FileReaderWriter.WriteOptions
             return Path.GetExtension(format);
         }
     }
-
 }

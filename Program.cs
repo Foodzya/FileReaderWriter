@@ -8,25 +8,26 @@ namespace FileReaderWriter
     {
         public static void Main(string[] args)
         {
-            int requiredArgs = 4;
+            int minRequiredArgs = 5;
 
-            if (args.Length == 0)
+            if (args[0] == "--interactive" && args.Length >= minRequiredArgs)
+            {
+                CommandLineWriter cmWriter = new CommandLineWriter();
+
+                cmWriter.WriteFromCommandLine(args);
+            }
+            else if (args.Length == 0)
             {
                 Launcher launcher = new Launcher();
 
                 launcher.LaunchMenu();
             }
-            else if (args.Length >= requiredArgs)
-            {
-                CommandLineWriter cmWriter = new CommandLineWriter();
-
-                cmWriter.WriteFromCommandLine(args); 
-            }
             else 
             {
                 Console.WriteLine("Not enough arguments for write operation\n" +
                     "Check for required arguments:\n" +
-                    "--bulk (must be the first argument)\n" +
+                    "--interactive (must be the first argument)\n" +
+                    "--bulk (for massive write process)\n" +
                     "--source=<dir_name>\n" +
                     "--target=<dir_name>\n" +
                     "--format=<format_type>");
