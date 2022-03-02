@@ -102,8 +102,10 @@ namespace FileReaderWriter.WriteOptions
             {
                 return targetPath;
             }
-
-            return null;
+            else 
+            {
+                throw new IOException("Target directory doesn't exist");
+            }
         }
 
         private string GetTargetFileFormat(string formatArgument)
