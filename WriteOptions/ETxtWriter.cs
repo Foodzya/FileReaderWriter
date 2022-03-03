@@ -2,7 +2,7 @@
 using System.IO;
 using FileReaderWriter.Menu;
 using FileReaderWriter.Menu.MenuStates;
-using FileReaderWriter;
+using FileReaderWriter.TextManipulations;
 
 namespace FileReaderWriter.WriteOptions
 {
@@ -87,7 +87,7 @@ namespace FileReaderWriter.WriteOptions
             if (shiftInput.ToLower() == "q")
             {
                 menuContext.ChangeMenuState(new WriteMenuState());
-            }               
+            }
 
             try
             {

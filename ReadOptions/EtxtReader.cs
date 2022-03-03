@@ -1,6 +1,7 @@
 ﻿using System;
 using FileReaderWriter.Menu;
 using FileReaderWriter.Menu.MenuStates;
+using FileReaderWriter.TextManipulations;
 
 namespace FileReaderWriter.ReadOptions
 {

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using FileReaderWriter.TextManipulations;
 
 namespace FileReaderWriter.WriteOptions
 {
@@ -28,6 +30,12 @@ namespace FileReaderWriter.WriteOptions
 
                 FileInfo[] txtFiles = null;
 
+                Task<FileInfo[]> txtFilesTask = null;
+
+                Task<string> targetDirectoryTask = null;
+
+                Task<string> fileFormatTask = null;
+
                 for (int i = 0; i < args.Length; i++)
                 {
                     string argument = args[i];
@@ -35,13 +43,13 @@ namespace FileReaderWriter.WriteOptions
                     switch (argument)
                     {
                         case string sourceArg when sourceArg.Contains("--source="):
-                            txtFiles = GetTxtFilesFromSourcePath(sourceArg);
+                            txtFilesTask = Task.Factory.StartNew(() => GetTxtFilesFromSourcePath(sourceArg));
                             break;
                         case string targetArg when targetArg.Contains("--target="):
-                            targetDirectory = GetTargetDirectory(targetArg);
+                            targetDirectoryTask = Task.Factory.StartNew(() => GetTargetDirectory(targetArg));
                             break;
                         case string formatArg when formatArg.Contains("--format="):
-                            fileFormat = GetTargetFileFormat(formatArg, args);
+                            fileFormatTask = Task.Factory.StartNew(() => GetTargetFileFormat(formatArg, args));
                             break;
                         default:
                             if (!allowedArguments.Any(arg => argument.Contains(arg)))
@@ -50,7 +58,16 @@ namespace FileReaderWriter.WriteOptions
                     }
                 }
 
-                WriteFromTxtFilesToNew(txtFiles, args, targetDirectory, fileFormat);
+                Task[] allTasks = new Task[] { txtFilesTask, targetDirectoryTask, fileFormatTask };
+
+                Task.WaitAll(allTasks);
+
+                txtFiles = txtFilesTask.Result;
+                targetDirectory = targetDirectoryTask.Result;
+                fileFormat = fileFormatTask.Result;
+
+                Task writeFromTxtFilesTask = Task.Factory.StartNew(() => WriteFromTxtFilesToNew(txtFiles, args, targetDirectory, fileFormat));
+                writeFromTxtFilesTask.Wait();
             }
             else
             {
@@ -68,7 +85,9 @@ namespace FileReaderWriter.WriteOptions
                 if (Array.Exists(args, arg => arg.Contains("--shift=")) && Array.Exists(args, arg => arg.Contains("--direction=")))
                 {
                     string argument = string.Empty;
+
                     int shift = 0;
+
                     string direction = string.Empty;
 
                     CaesarEncryptor caesarEncryptor = new CaesarEncryptor();

@@ -120,7 +120,7 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.WriteLine("Specify target file to write to (only .txt, .rtxt, .etxt, .btxt files are applicable..\n" +
                 "Type Q to return back to menu");
 
-            string? path = Console.ReadLine();
+            string path = Console.ReadLine();
 
             if (File.Exists(path))
             {
