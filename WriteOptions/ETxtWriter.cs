@@ -6,19 +6,19 @@ using FileReaderWriter;
 
 namespace FileReaderWriter.WriteOptions
 {
-    public class EtxtWriter : IWriteAction
+    public class EtxtWriter : IFileWriter
     {
         public void WriteToFile(string content, string targetFile)
         {
-            string result = CipherDirectionMenu(content);
+            string encryptedResult = GetEncryptedResult(content);
 
-            if (result != null)
+            if (encryptedResult != null)
             {
                 try
                 {
                     using (StreamWriter sw = File.CreateText(targetFile))
                     {
-                        sw.WriteLine(result);
+                        sw.WriteLine(encryptedResult);
                     }
                 }
                 catch (UnauthorizedAccessException e)
@@ -28,19 +28,19 @@ namespace FileReaderWriter.WriteOptions
             }
         }
 
-        private string CipherDirectionMenu(string content)
+        private string GetEncryptedResult(string content)
         {
             MenuContext menuContext = new MenuContext();
 
             CaesarEncryptor encryptor = new CaesarEncryptor();
 
-            string result = string.Empty;
+            string encryptedResult = string.Empty;
 
             int shift;
 
             Console.Clear();
 
-            Console.WriteLine("Select encription direction:\n" +
+            Console.WriteLine("Select encryption direction:\n" +
             "1 -- Left\n" +
             "2 -- Right\n" +
             "3 -- Back to the menu\n");
@@ -51,11 +51,11 @@ namespace FileReaderWriter.WriteOptions
             {
                 case ConsoleKey.D1:
                     shift = GetCipherShift();
-                    result = encryptor.LeftShiftCipher(content, shift);
+                    encryptedResult = encryptor.LeftShiftCipher(content, shift);
                     break;
                 case ConsoleKey.D2:
                     shift = GetCipherShift();
-                    result = encryptor.RightShiftCipher(content, shift);
+                    encryptedResult = encryptor.RightShiftCipher(content, shift);
                     break;
                 case ConsoleKey.D3:
                     menuContext.ChangeMenuState(new WriteMenuState());
@@ -65,11 +65,11 @@ namespace FileReaderWriter.WriteOptions
                         "Try again..\n" +
                         "To continue press any button.");
                     Console.ReadKey();
-                    CipherDirectionMenu(content);
+                    GetEncryptedResult(content);
                     break;
             }
 
-            return result;
+            return encryptedResult;
         }
 
         private int GetCipherShift()
@@ -85,11 +85,13 @@ namespace FileReaderWriter.WriteOptions
             string shiftInput = Console.ReadLine();
 
             if (shiftInput.ToLower() == "q")
+            {
                 menuContext.ChangeMenuState(new WriteMenuState());
+            }               
 
             try
             {
-                shift = Int32.Parse(shiftInput);
+                shift = int.Parse(shiftInput);
             }
             catch (FormatException e)
             {

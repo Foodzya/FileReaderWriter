@@ -5,19 +5,19 @@ using System.Text;
 
 namespace FileReaderWriter.WriteOptions
 {
-    public class BtxtWriter : IWriteAction
+    public class BtxtWriter : IFileWriter
     {
         public void WriteToFile(string content, string targetFile)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(content);
+            byte[] fileContentInBytes = Encoding.UTF8.GetBytes(content);
 
-            string result = string.Join("", bytes.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
+            string binaryResult = string.Join("", fileContentInBytes.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
 
             try
             {
                 using (StreamWriter sw = File.CreateText(targetFile))
                 {
-                    sw.WriteLine(result);
+                    sw.WriteLine(binaryResult);
                 }
             }
             catch (UnauthorizedAccessException e)

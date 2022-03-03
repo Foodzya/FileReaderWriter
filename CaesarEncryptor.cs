@@ -30,6 +30,5 @@ namespace FileReaderWriter
 
             return (char)((((ch + shift) - offset) % totalNumOfLetters) + offset);
         }
-
     }
 }

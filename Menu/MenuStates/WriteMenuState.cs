@@ -43,7 +43,7 @@ namespace FileReaderWriter.Menu.MenuStates
         {
             string content = GetSourceText();
 
-            string targetFile = PathToTargetFile();
+            string targetFile = GetPathToTargetFile();
 
             FileWriter fileWriter = new FileWriter();
 
@@ -88,7 +88,7 @@ namespace FileReaderWriter.Menu.MenuStates
         private string GetTextFromTxtFile()
         {
             Console.WriteLine("Specify path to the txt file..\n"
-                + @"Example: C:\ExampleFolder\example.txt"
+                + @"Example: C:\ExampleFolder\example.txt\n"
                 + "Type q to return to write menu");
 
             string path = Console.ReadLine();
@@ -98,22 +98,22 @@ namespace FileReaderWriter.Menu.MenuStates
                 return File.ReadAllText(path);
             }
             else if (path.ToLower() == "q")
-                _menuContext.ChangeMenuState(new WriteMenuState());
-            else
             {
-                Console.WriteLine("An error occured\n" +
-                    "Please check if specified txt file exists.\n" +
-                    "Press any button to try again.\n");
-
-                Console.ReadKey();
-
-                GetTextFromTxtFile();
+                _menuContext.ChangeMenuState(new WriteMenuState());
             }
+
+            Console.WriteLine("An error occured\n" +
+                "Please check if specified txt file exists.\n" +
+                "Press any button to try again.\n");
+
+            Console.ReadKey();
+
+            GetTextFromTxtFile();
 
             return string.Empty;
         }
 
-        private string PathToTargetFile()
+        private string GetPathToTargetFile()
         {
             Console.Clear();
 
@@ -138,7 +138,7 @@ namespace FileReaderWriter.Menu.MenuStates
 
                 if (Console.ReadKey().Key == ConsoleKey.D1)
                 {
-                    PathToTargetFile();
+                    GetPathToTargetFile();
                 }
                 else
                 {

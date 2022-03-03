@@ -36,14 +36,7 @@ namespace FileReaderWriter.Menu
 
         public void PressBack()
         {
-            if (!(_menuState is MainMenuState))
-            {
-                _menuState.PressBack();
-            }
-            else
-            {
-                Console.WriteLine("Do you wanna quit the app?");
-            }
+            _menuState.PressBack();
         }
 
         public void DisplayMenu()

@@ -5,7 +5,7 @@ namespace FileReaderWriter.WriteOptions
 {
     public class FileWriter
     {
-        private IWriteAction _writer;
+        private IFileWriter _writer;
 
         public FileWriter()
         {
@@ -17,14 +17,9 @@ namespace FileReaderWriter.WriteOptions
             ValidateFileExtension(targetFile);
 
             _writer.WriteToFile(content, targetFile);
-
-            Console.WriteLine("File has been successfully saved!\n" +
-                "Press anything to continue...");
-
-            Console.ReadKey();
         }
 
-        private void SetWriter(IWriteAction writer)
+        private void SetWriter(IFileWriter writer)
         {
             _writer = writer;
         }

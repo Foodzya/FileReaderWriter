@@ -40,20 +40,25 @@ namespace FileReaderWriter.Menu.MenuStates
             Console.Clear();
 
             Console.WriteLine("Specify path to the file to read from (only .txt, .rtxt, .etxt, .btxt formats are applicable)..\n" +
-                @"Example: C:\ExampleFolder\example.txt");
+                @"Example: C:\ExampleFolder\example.txt\n" +
+                "To get back to the previous step enter q\n");
 
-            string? path = Console.ReadLine();
-
-            FileReader fileReader = new FileReader();
+            string path = Console.ReadLine();
 
             if (File.Exists(path))
             {
+                FileReader fileReader = new FileReader();
+
                 string content = fileReader.ReadContentFromFile(path);
 
                 if (content != null)
                     WriteContentTo(content);
 
                 _menuContext.ChangeMenuState(new MainMenuState());
+            }
+            else if (path.ToLower() == "q")
+            {
+                _menuContext.ChangeMenuState(new ReadMenuState());
             }
             else
             {

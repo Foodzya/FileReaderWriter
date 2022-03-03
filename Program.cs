@@ -10,11 +10,14 @@ namespace FileReaderWriter
         {
             int minRequiredArgs = 5;
 
-            if (args[0] == "--interactive" && args.Length >= minRequiredArgs)
+            if (args.Length > 0) 
             {
-                CommandLineWriter cmWriter = new CommandLineWriter();
+                if (args[0] == "--interactive" && args.Length >= minRequiredArgs)
+                {
+                    CommandLineWriter cmWriter = new CommandLineWriter();
 
-                cmWriter.WriteFromCommandLine(args);
+                    cmWriter.WriteFromCommandLine(args);
+                }
             }
             else if (args.Length == 0)
             {
@@ -30,7 +33,10 @@ namespace FileReaderWriter
                     "--bulk (for massive write process)\n" +
                     "--source=<dir_name>\n" +
                     "--target=<dir_name>\n" +
-                    "--format=<format_type>");
+                    "--format=<format_type>\n\n" +
+                    "Additional arguments (for .etxt format):\n" +
+                    "--shift=<encryptor_shift>\n" +
+                    "--direction=<encryptor_direction>");
             }
         }
     }

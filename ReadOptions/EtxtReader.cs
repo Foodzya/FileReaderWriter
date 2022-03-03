@@ -17,7 +17,7 @@ namespace FileReaderWriter.ReadOptions
 
             CaesarEncryptor decryptor = new CaesarEncryptor();
 
-            string decryptionResult = string.Empty;
+            string decryptResult = string.Empty;
 
             int decryptionShift;
 
@@ -28,17 +28,17 @@ namespace FileReaderWriter.ReadOptions
             "2 -- Right\n" +
             "3 -- Back to the menu\n");
             
-            ConsoleKey direction = Console.ReadKey().Key;
+            ConsoleKey decryptDirection = Console.ReadKey().Key;
 
-            switch (direction)
+            switch (decryptDirection)
             {
                 case ConsoleKey.D1:
                     decryptionShift = GetCaesarCipherShift();
-                    decryptionResult = decryptor.LeftShiftCipher(content, decryptionShift);
+                    decryptResult = decryptor.LeftShiftCipher(content, decryptionShift);
                     break;
                 case ConsoleKey.D2:
                     decryptionShift = GetCaesarCipherShift();
-                    decryptionResult = decryptor.RightShiftCipher(content, decryptionShift);
+                    decryptResult = decryptor.RightShiftCipher(content, decryptionShift);
                     break;
                 case ConsoleKey.D3:
                     menuContext.ChangeMenuState(new ReadMenuState());
@@ -48,7 +48,7 @@ namespace FileReaderWriter.ReadOptions
                     break;
             }
 
-            return decryptionResult;
+            return decryptResult;
         }
 
         private int GetCaesarCipherShift()
