@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace FileReaderWriter.Menu.MenuStates
 {
@@ -9,14 +10,14 @@ namespace FileReaderWriter.Menu.MenuStates
             Environment.Exit(0);
         }
 
-        public override void ReadFromSpecificFile()
+        public override async Task ReadFromSpecificFileAsync()
         {
-            Console.WriteLine("Nothing special...");
+            await Task.Run(() => Console.WriteLine("Nothing special..."));
         }
 
-        public override void WriteToSpecificFile()
+        public override async Task WriteToSpecificFileAsync()
         {
-            Console.WriteLine("Nothing special...");
+            await Task.Run(() => Console.WriteLine("Nothing special..."));
         }
         public override void DisplayMenu()
         {

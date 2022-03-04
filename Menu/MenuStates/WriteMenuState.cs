@@ -1,6 +1,7 @@
 using FileReaderWriter.WriteOptions;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FileReaderWriter.Menu.MenuStates
 {
@@ -18,7 +19,7 @@ namespace FileReaderWriter.Menu.MenuStates
             switch (Console.ReadKey().Key)
             {
                 case ConsoleKey.D1:
-                    WriteToSpecificFile();
+                    _menuContext.WriteToSpecificFile();
                     break;
                 case ConsoleKey.D2:
                     _menuContext.PressBack();
@@ -34,25 +35,25 @@ namespace FileReaderWriter.Menu.MenuStates
             _menuContext.ChangeMenuState(new MainMenuState());
         }
 
-        public override void ReadFromSpecificFile()
+        public override async Task ReadFromSpecificFileAsync()
         {
-            Console.WriteLine("That's doing nothing special");
+            await Task.Run(() => Console.WriteLine("That's doing nothing special"));
         }
 
-        public override void WriteToSpecificFile()
+        public override async Task WriteToSpecificFileAsync()
         {
-            string content = GetSourceText();
+            string content = await GetSourceText();
 
             string targetFile = GetPathToTargetFile();
 
             FileWriter fileWriter = new FileWriter();
 
-            fileWriter.WriteToFile(content, targetFile);
+            await fileWriter.WriteToFileAsync(content, targetFile);
 
             _menuContext.ChangeMenuState(new MainMenuState());
         }
 
-        private string GetSourceText()
+        private async Task<string> GetSourceText()
         {
             Console.Clear();
 
@@ -66,7 +67,7 @@ namespace FileReaderWriter.Menu.MenuStates
             {
                 case ConsoleKey.D1:
                     Console.Clear();
-                    return GetTextFromTxtFile();
+                    return await GetTextFromTxtFile();
                 case ConsoleKey.D2:
                     Console.Clear();
                     Console.Write("Your text: ");
@@ -78,14 +79,14 @@ namespace FileReaderWriter.Menu.MenuStates
                     Console.WriteLine("An error occured.\n" +
                         "Press any button to try again..");
                     Console.ReadKey();
-                    GetSourceText();
+                    await GetSourceText();
                     break;
             }
 
             return string.Empty;
         }
 
-        private string GetTextFromTxtFile()
+        private async Task<string> GetTextFromTxtFile()
         {
             Console.WriteLine("Specify path to the txt file..\n"
                 + @"Example: C:\ExampleFolder\example.txt\n"
@@ -95,7 +96,7 @@ namespace FileReaderWriter.Menu.MenuStates
 
             if (File.Exists(path))
             {
-                return File.ReadAllText(path);
+                return await File.ReadAllTextAsync(path);
             }
             else if (path.ToLower() == "q")
             {
@@ -108,7 +109,7 @@ namespace FileReaderWriter.Menu.MenuStates
 
             Console.ReadKey();
 
-            GetTextFromTxtFile();
+            await GetTextFromTxtFile();
 
             return string.Empty;
         }

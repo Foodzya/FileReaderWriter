@@ -9,10 +9,10 @@ namespace FileReaderWriter.ReadOptions
     {
         public string FormatContent(string content)
         {
-            return CaesarCipherDirectionMenu(content);
+            return GetDecryptionResult(content);
         }
 
-        private string CaesarCipherDirectionMenu(string content)
+        private string GetDecryptionResult(string content)
         {
             MenuContext menuContext = new MenuContext();
 
@@ -45,7 +45,7 @@ namespace FileReaderWriter.ReadOptions
                     menuContext.ChangeMenuState(new ReadMenuState());
                     break;
                 default:
-                    CaesarCipherDirectionMenu(content);
+                    GetDecryptionResult(content);
                     break;
             }
 

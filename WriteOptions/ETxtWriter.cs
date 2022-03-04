@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using FileReaderWriter.Menu;
 using FileReaderWriter.Menu.MenuStates;
 using FileReaderWriter.TextManipulations;
@@ -8,7 +9,7 @@ namespace FileReaderWriter.WriteOptions
 {
     public class EtxtWriter : IFileWriter
     {
-        public void WriteToFile(string content, string targetFile)
+        public async Task WriteToFileAsync(string content, string targetFile)
         {
             string encryptedResult = GetEncryptedResult(content);
 
@@ -18,7 +19,7 @@ namespace FileReaderWriter.WriteOptions
                 {
                     using (StreamWriter sw = File.CreateText(targetFile))
                     {
-                        sw.WriteLine(encryptedResult);
+                        await sw.WriteLineAsync(encryptedResult);
                     }
                 }
                 catch (UnauthorizedAccessException e)

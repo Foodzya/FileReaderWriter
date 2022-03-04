@@ -2,12 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FileReaderWriter.WriteOptions
 {
     public class BtxtWriter : IFileWriter
     {
-        public void WriteToFile(string content, string targetFile)
+        public async Task WriteToFileAsync(string content, string targetFile)
         {
             byte[] fileContentInBytes = Encoding.UTF8.GetBytes(content);
 
@@ -17,7 +18,7 @@ namespace FileReaderWriter.WriteOptions
             {
                 using (StreamWriter sw = File.CreateText(targetFile))
                 {
-                    sw.WriteLine(binaryResult);
+                    await sw.WriteLineAsync(binaryResult);
                 }
             }
             catch (UnauthorizedAccessException e)

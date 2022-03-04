@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using FileReaderWriter.Menu;
 using FileReaderWriter.Menu.MenuStates;
 
@@ -40,11 +41,11 @@ namespace FileReaderWriter.ReadOptions
             }
         }
 
-        public string ReadContentFromFile(string path)
+        public async Task<string> ReadContentFromFileAsync(string path)
         {
             SetReaderByFileFormat(path);
 
-            string content = File.ReadAllText(path);
+            string content = await File.ReadAllTextAsync(path);
 
             return FormatContent(content);
         }

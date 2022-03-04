@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FileReaderWriter.WriteOptions
 {
     public class RtxtWriter : IFileWriter
     {
-        public void WriteToFile(string content, string targetFile)
+        public async Task WriteToFileAsync(string content, string targetFile)
         {
             char[] charArray = content.ToCharArray();
 
@@ -15,7 +16,7 @@ namespace FileReaderWriter.WriteOptions
             {
                 using (StreamWriter sw = File.CreateText(targetFile))
                 {
-                    sw.WriteLine(charArray);
+                    await sw.WriteLineAsync(charArray);
                 }
             }
             catch (UnauthorizedAccessException e)

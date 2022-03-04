@@ -1,17 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FileReaderWriter.WriteOptions
 {
     public class TxtWriter : IFileWriter
     {
-        public void WriteToFile(string content, string targetFile)
+        public async Task WriteToFileAsync(string content, string targetFile)
         {
             try
             {
                 using (StreamWriter sw = File.CreateText(targetFile))
                 {
-                    sw.WriteLine(content);
+                    await sw.WriteLineAsync(content);
                 }
             }
             catch (UnauthorizedAccessException e)

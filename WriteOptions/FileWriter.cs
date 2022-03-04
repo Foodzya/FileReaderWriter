@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FileReaderWriter.WriteOptions
 {
@@ -12,11 +13,11 @@ namespace FileReaderWriter.WriteOptions
 
         }
 
-        public void WriteToFile(string content, string targetFile)
+        public async Task WriteToFileAsync(string content, string targetFile)
         {
             ValidateFileExtension(targetFile);
 
-            _writer.WriteToFile(content, targetFile);
+            await _writer.WriteToFileAsync(content, targetFile);
         }
 
         private void SetWriter(IFileWriter writer)

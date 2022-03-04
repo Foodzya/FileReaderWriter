@@ -1,7 +1,9 @@
-﻿namespace FileReaderWriter.WriteOptions
+﻿using System.Threading.Tasks;
+
+namespace FileReaderWriter.WriteOptions
 {
     public interface IFileWriter
     {
-        public void WriteToFile(string content, string targetFile);
+        public Task WriteToFileAsync(string content, string targetFile);
     }
 }

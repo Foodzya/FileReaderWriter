@@ -107,13 +107,13 @@ namespace FileReaderWriter.WriteOptions
                                     }
                                 });
 
-                    Parallel.ForEach(txtFiles, txtFile =>
+                    Parallel.ForEach(txtFiles, async txtFile =>
                     {
                         try
                         {
                             using (StreamReader sr = txtFile.OpenText())
                             {
-                                string txtFileContent = sr.ReadToEnd();
+                                string txtFileContent = await sr.ReadToEndAsync();
 
                                 string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
 
@@ -126,7 +126,7 @@ namespace FileReaderWriter.WriteOptions
                                 else if (direction == "right")
                                     formattedContent = caesarEncryptor.RightShiftCipher(txtFileContent, shift);
 
-                                txtWriter.WriteToFile(formattedContent, targetFile);
+                                await txtWriter.WriteToFileAsync(formattedContent, targetFile);
                             }
                         }
                         catch (Exception e)
@@ -142,7 +142,7 @@ namespace FileReaderWriter.WriteOptions
             }
             else
             {
-                Parallel.ForEach(txtFiles, txtFile => 
+                Parallel.ForEach(txtFiles, async txtFile => 
                 {
                     try
                     {
@@ -154,7 +154,7 @@ namespace FileReaderWriter.WriteOptions
 
                             string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
 
-                            fileWriter.WriteToFile(txtFileContent, targetFile);
+                            await fileWriter.WriteToFileAsync(txtFileContent, targetFile);
                         }
                     }
                     catch (IOException e)

@@ -24,14 +24,14 @@ namespace FileReaderWriter.Menu
 
         public void ReadFromSpecificFile()
         {
-            _menuState.ReadFromSpecificFile();
+            _menuState.ReadFromSpecificFileAsync();
         }
 
         public void WriteToSpecificFile()
         {
             ChangeMenuState(new WriteMenuState());
 
-            _menuState.WriteToSpecificFile();
+            _menuState.WriteToSpecificFileAsync();
         }
 
         public void PressBack()

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using FileReaderWriter.ReadOptions;
 using FileReaderWriter.WriteOptions;
 
@@ -35,7 +36,7 @@ namespace FileReaderWriter.Menu.MenuStates
             _menuContext.ChangeMenuState(new MainMenuState());
         }
 
-        public override void ReadFromSpecificFile()
+        public override async Task ReadFromSpecificFileAsync()
         {
             Console.Clear();
 
@@ -49,10 +50,10 @@ namespace FileReaderWriter.Menu.MenuStates
             {
                 FileReader fileReader = new FileReader();
 
-                string content = fileReader.ReadContentFromFile(path);
+                string content = await fileReader.ReadContentFromFileAsync(path);
 
                 if (content != null)
-                    WriteContentTo(content);
+                    await WriteContentTo(content);
 
                 _menuContext.ChangeMenuState(new MainMenuState());
             }
@@ -67,11 +68,11 @@ namespace FileReaderWriter.Menu.MenuStates
 
                 Console.ReadKey();
 
-                this.ReadFromSpecificFile();
+                await this.ReadFromSpecificFileAsync();
             }
         }
 
-        private void WriteContentTo(string content)
+        private async Task WriteContentTo(string content)
         {
             string targetFile = string.Empty;
 
@@ -105,7 +106,8 @@ namespace FileReaderWriter.Menu.MenuStates
             if (File.Exists(targetFile))
             {
                 TxtWriter txtWriter = new TxtWriter();
-                txtWriter.WriteToFile(content, targetFile);
+
+                await txtWriter.WriteToFileAsync(content, targetFile);
             }
             else
             {
@@ -113,6 +115,7 @@ namespace FileReaderWriter.Menu.MenuStates
             }
 
             Console.WriteLine("Press any button to continue...");
+
             Console.ReadKey();
         }
 
@@ -141,9 +144,9 @@ namespace FileReaderWriter.Menu.MenuStates
             return string.Empty;
         }
 
-        public override void WriteToSpecificFile()
+        public override async Task WriteToSpecificFileAsync()
         {
-            Console.WriteLine("That's doing nothing here");
+            await Task.Run(() => Console.WriteLine("That's doing nothing here"));
         }
     }
 }
