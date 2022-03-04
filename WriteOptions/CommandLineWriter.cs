@@ -92,22 +92,22 @@ namespace FileReaderWriter.WriteOptions
 
                     CaesarEncryptor caesarEncryptor = new CaesarEncryptor();
 
-                    for (int i = 1; i < args.Length; i++)
-                    {
-                        argument = args[i];
+                    Parallel.For(0, args.Length,
+                                index =>
+                                {
+                                    argument = args[index];
+                                    switch (argument)
+                                    {
+                                        case string encryptorShiftArg when encryptorShiftArg.Contains("--shift="):
+                                            shift = GetCaesarEncryptorShift(encryptorShiftArg);
+                                            break;
+                                        case string encryptorDirectionArg when encryptorDirectionArg.Contains("--direction="):
+                                            direction = GetCaesarEncryptorDirection(encryptorDirectionArg);
+                                            break;
+                                    }
+                                });
 
-                        switch (argument)
-                        {
-                            case string encryptorShiftArg when encryptorShiftArg.Contains("--shift="):
-                                shift = GetCaesarEncryptorShift(encryptorShiftArg);
-                                break;
-                            case string encryptorDirectionArg when encryptorDirectionArg.Contains("--direction="):
-                                direction = GetCaesarEncryptorDirection(encryptorDirectionArg);
-                                break;
-                        }
-                    }
-
-                    foreach (FileInfo txtFile in txtFiles)
+                    Parallel.ForEach(txtFiles, txtFile =>
                     {
                         try
                         {
@@ -133,7 +133,7 @@ namespace FileReaderWriter.WriteOptions
                         {
                             Console.WriteLine(e.Message);
                         }
-                    }
+                    });
                 }
                 else
                 {
@@ -142,7 +142,7 @@ namespace FileReaderWriter.WriteOptions
             }
             else
             {
-                foreach (FileInfo txtFile in txtFiles)
+                Parallel.ForEach(txtFiles, txtFile => 
                 {
                     try
                     {
@@ -161,7 +161,7 @@ namespace FileReaderWriter.WriteOptions
                     {
                         Console.WriteLine(e.Message);
                     }
-                }
+                });
             }
         }
 
