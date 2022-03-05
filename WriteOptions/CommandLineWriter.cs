@@ -20,7 +20,7 @@ namespace FileReaderWriter.WriteOptions
             "--direction="
         };
 
-        public void WriteFromCommandLine(string[] args)
+        public async Task WriteFromCommandLine(string[] args)
         {
             if (Array.Exists(args, arg => arg == "--bulk"))
             {
@@ -66,8 +66,7 @@ namespace FileReaderWriter.WriteOptions
                 targetDirectory = targetDirectoryTask.Result;
                 fileFormat = fileFormatTask.Result;
 
-                Task writeFromTxtFilesTask = Task.Factory.StartNew(() => WriteFromTxtFilesToNew(txtFiles, args, targetDirectory, fileFormat));
-                writeFromTxtFilesTask.Wait();
+                await WriteFromTxtFilesToNew(txtFiles, args, targetDirectory, fileFormat);
             }
             else
             {
@@ -75,7 +74,7 @@ namespace FileReaderWriter.WriteOptions
             }
         }
 
-        private void WriteFromTxtFilesToNew(FileInfo[] txtFiles, string[] args, string targetDirectory, string fileFormat)
+        private async Task WriteFromTxtFilesToNew(FileInfo[] txtFiles, string[] args, string targetDirectory, string fileFormat)
         {
             FileWriter fileWriter = new FileWriter();
             TxtWriter txtWriter = new TxtWriter();
@@ -107,7 +106,7 @@ namespace FileReaderWriter.WriteOptions
                                     }
                                 });
 
-                    Parallel.ForEach(txtFiles, async txtFile =>
+                    foreach (FileInfo txtFile in txtFiles)
                     {
                         try
                         {
@@ -133,7 +132,7 @@ namespace FileReaderWriter.WriteOptions
                         {
                             Console.WriteLine(e.Message);
                         }
-                    });
+                    }
                 }
                 else
                 {
@@ -142,7 +141,7 @@ namespace FileReaderWriter.WriteOptions
             }
             else
             {
-                Parallel.ForEach(txtFiles, async txtFile => 
+                foreach (FileInfo txtFile in txtFiles)
                 {
                     try
                     {
@@ -161,7 +160,7 @@ namespace FileReaderWriter.WriteOptions
                     {
                         Console.WriteLine(e.Message);
                     }
-                });
+                }
             }
         }
 

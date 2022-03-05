@@ -1,12 +1,12 @@
 ﻿using System;
-using System.IO;
+using System.Threading.Tasks;
 using FileReaderWriter.WriteOptions;
 
 namespace FileReaderWriter
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             int minRequiredArgs = 5;
 
@@ -16,7 +16,7 @@ namespace FileReaderWriter
                 {
                     CommandLineWriter cmWriter = new CommandLineWriter();
 
-                    cmWriter.WriteFromCommandLine(args);
+                    await cmWriter.WriteFromCommandLine(args);
                 }
             }
             else if (args.Length == 0)
