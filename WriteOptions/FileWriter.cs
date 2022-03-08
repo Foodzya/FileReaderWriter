@@ -15,7 +15,7 @@ namespace FileReaderWriter.WriteOptions
 
         public async Task WriteToFileAsync(string content, string targetFile)
         {
-            ValidateFileExtension(targetFile);
+            SetWriterByFileExtension(targetFile);
 
             await _writer.WriteToFileAsync(content, targetFile);
         }
@@ -25,7 +25,7 @@ namespace FileReaderWriter.WriteOptions
             _writer = writer;
         }
 
-        private void ValidateFileExtension(string path)
+        private void SetWriterByFileExtension(string path)
         {
             string extension = Path.GetExtension(path);
 

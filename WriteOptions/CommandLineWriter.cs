@@ -1,34 +1,28 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FileReaderWriter.TextManipulations;
+using FileReaderWriter.Enums;
+using FileReaderWriter.Extensions;
+using static FileReaderWriter.Enums.ArgumentEnum;
+using System.Collections.Generic;
 
 namespace FileReaderWriter.WriteOptions
 {
     public class CommandLineWriter
     {
-        private List<string> allowedArguments = new List<string>
-        {
-            "--interactive",
-            "--bulk",
-            "--source=",
-            "--target=",
-            "--format=",
-            "--shift=",
-            "--direction="
-        };
-
         public async Task WriteFromCommandLine(string[] args)
         {
-            if (Array.Exists(args, arg => arg == "--bulk"))
+            if (Array.Exists(args, arg => arg == string.Concat("--", ArgumentEnum.Argument.bulk)))
             {
                 string targetDirectory = string.Empty;
 
                 string fileFormat = string.Empty;
 
                 FileInfo[] txtFiles = null;
+
+                List<Argument> allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
 
                 Task<FileInfo[]> txtFilesTask = null;
 
@@ -42,18 +36,18 @@ namespace FileReaderWriter.WriteOptions
 
                     switch (argument)
                     {
-                        case string sourceArg when sourceArg.Contains("--source="):
+                        case string sourceArg when sourceArg.Contains(Argument.source.ToValidArgument()):
                             txtFilesTask = Task.Factory.StartNew(() => GetTxtFilesFromSourcePath(sourceArg));
                             break;
-                        case string targetArg when targetArg.Contains("--target="):
+                        case string targetArg when targetArg.Contains(Argument.target.ToValidArgument()):
                             targetDirectoryTask = Task.Factory.StartNew(() => GetTargetDirectory(targetArg));
                             break;
-                        case string formatArg when formatArg.Contains("--format="):
-                            fileFormatTask = Task.Factory.StartNew(() => GetTargetFileFormat(formatArg, args));
+                        case string formatArg when formatArg.Contains(Argument.format.ToValidArgument()):
+                            fileFormatTask = Task.Factory.StartNew(() => GetTargetFileFormat(formatArg));
                             break;
                         default:
-                            if (!allowedArguments.Any(arg => argument.Contains(arg)))
-                                throw new Exception("Unknown argument!");
+                            if (!allowedArguments.Any(arg => argument.Contains(arg.ToValidArgument())))
+                                throw new Exception("Unknown argument");
                             break;
                     }
                 }
@@ -70,18 +64,45 @@ namespace FileReaderWriter.WriteOptions
             }
             else
             {
-                Console.WriteLine("To use command-line write feature first argument must be --bulk");
+                Console.WriteLine("To use multiple write option command line must contain --bulk argument");
             }
         }
 
-        private async Task WriteFromTxtFilesToNew(FileInfo[] txtFiles, string[] args, string targetDirectory, string fileFormat)
+        private async Task WriteFromTxtFilesToNew(
+            FileInfo[] txtFiles,
+            string[] args,
+            string targetDirectory,
+            string fileFormat)
         {
             FileWriter fileWriter = new FileWriter();
             TxtWriter txtWriter = new TxtWriter();
 
-            if (fileFormat == ".etxt")
+            if (fileFormat != ".etxt")
             {
-                if (Array.Exists(args, arg => arg.Contains("--shift=")) && Array.Exists(args, arg => arg.Contains("--direction=")))
+                foreach (FileInfo txtFile in txtFiles)
+                {
+                    try
+                    {
+                        using (StreamReader sr = txtFile.OpenText())
+                        {
+                            string txtFileContent = sr.ReadToEnd();
+
+                            string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
+
+                            string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
+
+                            await fileWriter.WriteToFileAsync(txtFileContent, targetFile);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
+            else
+            {
+                if (Array.Exists(args, arg => arg.Contains(Argument.shift.ToValidArgument())) && Array.Exists(args, arg => arg.Contains(Argument.direction.ToValidArgument())))
                 {
                     string argument = string.Empty;
 
@@ -137,29 +158,6 @@ namespace FileReaderWriter.WriteOptions
                 else
                 {
                     throw new IOException("Command line must contain --shift=<encryptor_shift> and --direction=<encryptor_direction> arguments along with .etxt file format");
-                }
-            }
-            else
-            {
-                foreach (FileInfo txtFile in txtFiles)
-                {
-                    try
-                    {
-                        using (StreamReader sr = txtFile.OpenText())
-                        {
-                            string txtFileContent = sr.ReadToEnd();
-
-                            string fileName = Path.GetFileNameWithoutExtension(txtFile.Name);
-
-                            string targetFile = $@"{targetDirectory}\{fileName}{fileFormat}";
-
-                            await fileWriter.WriteToFileAsync(txtFileContent, targetFile);
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
                 }
             }
         }
@@ -238,7 +236,7 @@ namespace FileReaderWriter.WriteOptions
             }
         }
 
-        private string GetTargetFileFormat(string formatArgument, string[] args)
+        private string GetTargetFileFormat(string formatArgument)
         {
             int formatIndex = formatArgument.IndexOf('=') + 1;
 
