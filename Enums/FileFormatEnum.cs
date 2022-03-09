@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileReaderWriter.Enums
+﻿namespace FileReaderWriter.Enums
 {
-    internal class FileFormatEnum
+    public class FileFormatEnum
     {
+        public enum FileFormat
+        {
+            txt,
+            rtxt,
+            btxt,
+            etxt
+        }
     }
 }

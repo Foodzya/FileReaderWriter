@@ -12,7 +12,7 @@ namespace FileReaderWriter
         {
             int minRequiredArgs = 4;
 
-            if (args[0] == Argument.interactive.ToValidArgument() || args.Length == 0)
+            if (args.Length == 0 || args[0] == Argument.interactive.ToValidArgument())
             {
                 Launcher launcher = new Launcher();
 
@@ -28,8 +28,7 @@ namespace FileReaderWriter
             {
                 Console.WriteLine("Not enough arguments for write operation\n" +
                     "Check for required arguments:\n" +
-                    "--interactive (must be the first argument)\n" +
-                    "--bulk (for massive write process)\n" +
+                    "--bulk (for multiple files write process)\n" +
                     "--source=<dir_name>\n" +
                     "--target=<dir_name>\n" +
                     "--format=<format_type>\n\n" +

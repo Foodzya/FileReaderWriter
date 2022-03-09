@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace FileReaderWriter.Enums
+﻿namespace FileReaderWriter.Enums
 {
     public class ArgumentEnum
     {

@@ -7,6 +7,7 @@ using FileReaderWriter.Enums;
 using FileReaderWriter.Extensions;
 using static FileReaderWriter.Enums.ArgumentEnum;
 using System.Collections.Generic;
+using static FileReaderWriter.Enums.FileFormatEnum;
 
 namespace FileReaderWriter.WriteOptions
 {
@@ -77,7 +78,7 @@ namespace FileReaderWriter.WriteOptions
             FileWriter fileWriter = new FileWriter();
             TxtWriter txtWriter = new TxtWriter();
 
-            if (fileFormat != ".etxt")
+            if (fileFormat != FileFormat.etxt.ToValidFileFormat())
             {
                 foreach (FileInfo txtFile in txtFiles)
                 {

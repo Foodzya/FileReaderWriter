@@ -28,8 +28,6 @@ namespace FileReaderWriter.Menu
 
         public void WriteToSpecificFile()
         {
-            ChangeMenuState(new WriteMenuState());
-
             _menuState.WriteToSpecificFileAsync();
         }
 

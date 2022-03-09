@@ -8,11 +8,11 @@ namespace FileReaderWriter.Extensions
         {
             if (arg == Argument.interactive || arg == Argument.bulk)
             {
-                return "--" + arg;
+                return string.Concat("--", arg);
             }
             else
             {
-                return "--" + arg + "=";
+                return string.Concat("--", arg, "=");
             }
         }
     }

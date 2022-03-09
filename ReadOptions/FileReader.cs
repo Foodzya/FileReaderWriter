@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using FileReaderWriter.Menu;
 using FileReaderWriter.Menu.MenuStates;
+using FileReaderWriter.Extensions;
+using static FileReaderWriter.Enums.FileFormatEnum;
 
 namespace FileReaderWriter.ReadOptions
 {
@@ -21,22 +23,24 @@ namespace FileReaderWriter.ReadOptions
             
             switch (extension)
             {
-                case ".txt":
+                case string format when format.Equals(FileFormat.txt.ToValidFileFormat()):
                     SetReader(new TxtReader());
                     break;
-                case ".rtxt":
+                case string format when format.Equals(FileFormat.rtxt.ToValidFileFormat()):
                     SetReader(new RtxtReader());
                     break;
-                case ".etxt":
+                case string format when format.Equals(FileFormat.etxt.ToValidFileFormat()):
                     SetReader(new EtxtReader());
                     break;
-                case ".btxt":
+                case string format when format.Equals(FileFormat.btxt.ToValidFileFormat()):
                     SetReader(new BtxtReader());
                     break;
                 default:
                     Console.WriteLine("This file type is unsupported.\n" +
                         "Press any button to continue...");
                     Console.ReadKey();
+                    MenuContext menuContext = new MenuContext();
+                    menuContext.ChangeMenuState(new MainMenuState());
                     break;
             }
         }
