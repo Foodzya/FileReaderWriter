@@ -11,7 +11,8 @@
             format,
             path,
             shift,
-            direction
+            direction,
+            repetitions,
         }
     }
 }

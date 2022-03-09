@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FileReaderWriter.TextManipulations;
-using FileReaderWriter.Enums;
 using FileReaderWriter.Extensions;
 using static FileReaderWriter.Enums.ArgumentEnum;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace FileReaderWriter.WriteOptions
     {
         public async Task WriteFromCommandLine(string[] args)
         {
-            if (Array.Exists(args, arg => arg == string.Concat("--", ArgumentEnum.Argument.bulk)))
+            if (Array.Exists(args, arg => arg == Argument.bulk.ToValidArgument()))
             {
                 string targetDirectory = string.Empty;
 
@@ -119,11 +118,11 @@ namespace FileReaderWriter.WriteOptions
                                     argument = args[index];
                                     switch (argument)
                                     {
-                                        case string encryptorShiftArg when encryptorShiftArg.Contains("--shift="):
-                                            shift = GetCaesarEncryptorShift(encryptorShiftArg);
+                                        case string encryptorShiftArg when encryptorShiftArg.Contains(Argument.shift.ToValidArgument()):
+                                            shift = caesarEncryptor.GetShiftFromCommandLine(encryptorShiftArg);
                                             break;
-                                        case string encryptorDirectionArg when encryptorDirectionArg.Contains("--direction="):
-                                            direction = GetCaesarEncryptorDirection(encryptorDirectionArg);
+                                        case string encryptorDirectionArg when encryptorDirectionArg.Contains(Argument.direction.ToValidArgument()):
+                                            direction = caesarEncryptor.GetDirectionFromCommandLine(encryptorDirectionArg);
                                             break;
                                     }
                                 });
@@ -161,42 +160,6 @@ namespace FileReaderWriter.WriteOptions
                     throw new IOException("Command line must contain --shift=<encryptor_shift> and --direction=<encryptor_direction> arguments along with .etxt file format");
                 }
             }
-        }
-
-        private string GetCaesarEncryptorDirection(string encryptorDirectionArgument)
-        {
-            int directionIndex = encryptorDirectionArgument.IndexOf('=') + 1;
-
-            string direction = encryptorDirectionArgument.Substring(directionIndex);
-
-            if (direction == "right" || direction == "left")
-            {
-                return direction;
-            }
-            else
-            {
-                throw new ArgumentException("--direction argument can have only 'right' or 'left' values");
-            }
-        }
-
-        private int GetCaesarEncryptorShift(string encryptorShiftArgument)
-        {
-            int shiftIndex = encryptorShiftArgument.IndexOf('=') + 1;
-
-            int shift = 0;
-
-            string shiftAsString = encryptorShiftArgument.Substring(shiftIndex);
-
-            try
-            {
-                shift = int.Parse(shiftAsString);
-            }
-            catch (FormatException exception)
-            {
-                Console.WriteLine("Incorrect shift argument\n" + exception);
-            }
-
-            return shift;
         }
 
         private FileInfo[] GetTxtFilesFromSourcePath(string sourceArgument)

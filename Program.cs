@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FileReaderWriter.CommandLineOperations;
 using FileReaderWriter.Extensions;
 using FileReaderWriter.WriteOptions;
 using static FileReaderWriter.Enums.ArgumentEnum;
@@ -10,7 +11,9 @@ namespace FileReaderWriter
     {
         public static async Task Main(string[] args)
         {
-            int minRequiredArgs = 4;
+            int argsForBulkWriter = 4;
+
+            int argsForRepetitionCounter = 3;
 
             if (args.Length == 0 || args[0] == Argument.interactive.ToValidArgument())
             {
@@ -18,7 +21,13 @@ namespace FileReaderWriter
 
                 launcher.LaunchMenu();
             }
-            else if (args.Length >= minRequiredArgs)
+            else if (Array.Exists(args, arg => arg == Argument.repetitions.ToValidArgument()) && args.Length >= argsForRepetitionCounter)
+            {
+                RepetitionCounter repetitionCounter = new RepetitionCounter();
+
+                repetitionCounter.WriteWordsToJsonInDescending(args);
+            }
+            else if (Array.Exists(args, arg => arg == Argument.bulk.ToValidArgument()) && args.Length >= argsForBulkWriter)
             {
                 CommandLineWriter cmWriter = new CommandLineWriter();
 

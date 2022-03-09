@@ -7,7 +7,8 @@
             txt,
             rtxt,
             btxt,
-            etxt
+            etxt,
+            json
         }
     }
 }

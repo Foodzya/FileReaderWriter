@@ -17,7 +17,7 @@ namespace FileReaderWriter.ReadOptions
             _reader = reader;
         }
 
-        public void SetReaderByFileFormat(string path)
+        private void SetReaderByFileFormat(string path)
         {
             string extension = Path.GetExtension(path);
             

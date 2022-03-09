@@ -6,7 +6,7 @@ namespace FileReaderWriter.Extensions
     {
         public static string ToValidArgument(this Argument arg)
         {
-            if (arg == Argument.interactive || arg == Argument.bulk)
+            if (arg == Argument.interactive || arg == Argument.bulk || arg == Argument.repetitions)
             {
                 return string.Concat("--", arg);
             }
