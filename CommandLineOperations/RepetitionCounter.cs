@@ -20,11 +20,13 @@ namespace FileReaderWriter.CommandLineOperations
 
             Task<string> targetJsonFileTask = null;
 
+            Task[] allTasks;
+
             List<Argument> allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
 
             string sourceFilePath;
 
-            string targetJsonPath;
+            string targetJsonPath = null;
 
             string textFromSourceFile;
 
@@ -49,13 +51,20 @@ namespace FileReaderWriter.CommandLineOperations
                 }
             }
 
-            Task[] allTasks = new Task[] { sourceFilePathTask, targetJsonFileTask };
+            if (targetJsonFileTask != null)
+            {
+                allTasks = new Task[] { sourceFilePathTask, targetJsonFileTask };
 
-            Task.WaitAll(allTasks);
+                Task.WaitAll(allTasks);
+
+                targetJsonPath = targetJsonFileTask.Result;
+            }
+            else
+            {
+                sourceFilePathTask.Wait();
+            }
 
             sourceFilePath = sourceFilePathTask.Result;
-
-            targetJsonPath = targetJsonFileTask.Result;
 
             textFromSourceFile = await GetTextFromSourceFile(sourceFilePath, args);
 
@@ -66,7 +75,7 @@ namespace FileReaderWriter.CommandLineOperations
 
         private Dictionary<string, int> GetDictionaryOfRepetativeWords(string textFromSourceFile)
         {
-            char[] delimeterChars = { ' ', ',', '.', ':', ';', '\t', '\r', '\n', '—', '-', '"', '\'' };
+            char[] delimeterChars = { ' ', ',', '.', ':', ';', '\t', '\r', '\n', '—', '-', '"' };
 
             Dictionary<string, int> dictionaryWithRepetitiveWords = new Dictionary<string, int>();
 
@@ -101,11 +110,11 @@ namespace FileReaderWriter.CommandLineOperations
                     {
                         if (str == orderedTextInJsonFormat.First())
                         {
-                            tw.Write("[{" + str + "}, ");
+                            tw.Write("[ {" + str + "}, ");
                         }
                         else if (str == orderedTextInJsonFormat.Last())
                         {
-                            tw.Write("{" + str + "}]");
+                            tw.Write("{" + str + "} ]");
 
                         }
                         else
@@ -121,11 +130,11 @@ namespace FileReaderWriter.CommandLineOperations
                 {
                     if (str == orderedTextInJsonFormat.First())
                     {
-                        Console.Write("[{" + str + "}, ");
+                        Console.Write("[ {" + str + "}, ");
                     }
                     else if (str == orderedTextInJsonFormat.Last())
                     {
-                        Console.Write("{" + str + "}]");
+                        Console.Write("{" + str + "} ]");
 
                     }
                     else
@@ -133,6 +142,10 @@ namespace FileReaderWriter.CommandLineOperations
                         Console.Write("{" + str + "}, ");
                     }
                 });
+            }
+            else
+            {
+                throw new ArgumentException($"Command line must contain --json (along with --target= argument) or --console (--target argument not necessary)");
             }
         }
 

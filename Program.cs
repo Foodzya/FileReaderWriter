@@ -13,7 +13,7 @@ namespace FileReaderWriter
         {
             int argsForBulkWriter = 4;
 
-            int argsForRepetitionCounter = 4;
+            int argsForRepetitionCounter = 3;
 
             if (args.Length == 0 || args[0] == Argument.interactive.ToValidArgument())
             {
@@ -21,7 +21,7 @@ namespace FileReaderWriter
 
                 launcher.LaunchMenu();
             }
-            else if (Array.Exists(args, arg => arg == Argument.repetitions.ToValidArgument()) && args.Length == argsForRepetitionCounter)
+            else if (Array.Exists(args, arg => arg == Argument.repetitions.ToValidArgument()) && args.Length > argsForRepetitionCounter)
             {
                 RepetitionCounter repetitionCounter = new RepetitionCounter();
 
