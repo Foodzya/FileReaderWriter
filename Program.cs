@@ -13,7 +13,7 @@ namespace FileReaderWriter
         {
             int argsForBulkWriter = 4;
 
-            int argsForRepetitionCounter = 3;
+            int argsForRepetitionCounter = 2;
 
             if (args.Length == 0 || args[0] == Argument.interactive.ToValidArgument())
             {
@@ -26,6 +26,12 @@ namespace FileReaderWriter
                 RepetitionCounter repetitionCounter = new RepetitionCounter();
 
                 repetitionCounter.WriteWordsToJsonInDescending(args);
+            }
+            else if (Array.Exists(args, arg => arg.Contains(Argument.search.ToValidArgument())))
+            {
+                TextSearcher textSearcher = new TextSearcher();
+
+                await textSearcher.SearchTextInFile(args);
             }
             else if (Array.Exists(args, arg => arg == Argument.bulk.ToValidArgument()) && args.Length >= argsForBulkWriter)
             {

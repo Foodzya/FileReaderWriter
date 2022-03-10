@@ -75,11 +75,11 @@ namespace FileReaderWriter.CommandLineOperations
 
         private Dictionary<string, int> GetDictionaryOfRepetativeWords(string textFromSourceFile)
         {
-            char[] delimeterChars = { ' ', ',', '.', ':', ';', '\t', '\r', '\n', '—', '-', '"' };
+            char[] delimiterChars = { ' ', ',', '.', ':', ';', '\t', '\r', '\n', '—', '-', '"' };
 
             Dictionary<string, int> dictionaryWithRepetitiveWords = new Dictionary<string, int>();
 
-            List<string> listOfAllWords = textFromSourceFile.ToLower().Split(delimeterChars, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> listOfAllWords = textFromSourceFile.ToLower().Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             listOfAllWords.ForEach(word =>
             {
