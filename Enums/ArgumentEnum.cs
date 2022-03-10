@@ -13,7 +13,8 @@
             direction,
             repetitions,
             console,
-            json
+            json,
+            search
         }
     }
 }
