@@ -1,6 +1,7 @@
 ﻿using FileReaderWriter.Extensions;
 using FileReaderWriter.ReadOptions;
 using FileReaderWriter.TextManipulations;
+using FileReaderWriter.WriteOptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,10 +20,12 @@ namespace FileReaderWriter.CommandLineOperations
 
             Task<string> targetJsonFileTask = null;
 
-            List<FileFormat> allowedFileFormats = Enum.GetValues(typeof(FileFormat)).Cast<FileFormat>().ToList();
+            List<Argument> allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
 
             string sourceFilePath;
-            
+
+            string targetJsonPath;
+
             string textFromSourceFile;
 
             for (var i = 0; i < args.Length; i++)
@@ -40,7 +43,7 @@ namespace FileReaderWriter.CommandLineOperations
                     case string repetitionArg when repetitionArg.Contains(Argument.repetitions.ToValidArgument()):
                         break;
                     default:
-                        if (!allowedFileFormats.Any(format => argument.Contains(format.ToValidFileFormat())))
+                        if (!allowedArguments.Any(arg => argument.Contains(arg.ToValidArgument())))
                             throw new ArgumentException($"Wrong {argument} argument");
                         break;
                 }
@@ -52,43 +55,84 @@ namespace FileReaderWriter.CommandLineOperations
 
             sourceFilePath = sourceFilePathTask.Result;
 
+            targetJsonPath = targetJsonFileTask.Result;
+
             textFromSourceFile = await GetTextFromSourceFile(sourceFilePath, args);
 
-            SortWordsInDescendingToJson(textFromSourceFile);
+            Dictionary<string, int> keyValueOfRepetitiveWords = GetDictionaryOfRepetativeWords(textFromSourceFile);
+
+            WriteDictionaryToJsonFileInDescending(keyValueOfRepetitiveWords, targetJsonPath, args);
         }
 
-        private string SortWordsInDescendingToJson(string textFromSourceFile)
+        private Dictionary<string, int> GetDictionaryOfRepetativeWords(string textFromSourceFile)
         {
-            char[] delimeterChars = { ' ', ',', '.', ':', ';', '\t', '—', '-' };
+            char[] delimeterChars = { ' ', ',', '.', ':', ';', '\t', '\r', '\n', '—', '-', '"', '\'' };
 
-            Dictionary<string, int> dictionaryWithRepeatedWords = new Dictionary<string, int>();
+            Dictionary<string, int> dictionaryWithRepetitiveWords = new Dictionary<string, int>();
 
-            List<string> listOfAllWords = textFromSourceFile.ToLower().Split(delimeterChars).ToList();
+            List<string> listOfAllWords = textFromSourceFile.ToLower().Split(delimeterChars, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             listOfAllWords.ForEach(word =>
             {
-                if (dictionaryWithRepeatedWords.ContainsKey(word))
+                if (dictionaryWithRepetitiveWords.ContainsKey(word))
                 {
-                    dictionaryWithRepeatedWords[word]++;
+                    dictionaryWithRepetitiveWords[word]++;
                 }
                 else
                 {
-                    dictionaryWithRepeatedWords.Add(word, 1);
+                    dictionaryWithRepetitiveWords.Add(word, 1);
                 }
             });
 
-            DictionaryToJson(dictionaryWithRepeatedWords);
-
-            return null;
+            return dictionaryWithRepetitiveWords;
         }
 
-        private void DictionaryToJson(Dictionary<string, int> dictionaryWithRepeatedWords)
+        private void WriteDictionaryToJsonFileInDescending(Dictionary<string, int> dictionaryWithRepetitiveWords, string targetJsonPath, string[] args)
         {
-            var json = dictionaryWithRepeatedWords.Select(d => string.Format("\"{0}\": [{1}]", d.Key, d.Value));
+            List<string> orderedTextInJsonFormat = dictionaryWithRepetitiveWords.OrderByDescending(word => word.Value).Select(keyValuePair => string.Format("{0}:{1}", keyValuePair.Key, keyValuePair.Value)).ToList();
 
-            foreach(var j in json)
+            TxtWriter txtWriter = new TxtWriter();
+
+            if (args.Contains(Argument.json.ToValidArgument()))
             {
-                Console.WriteLine(j);
+                using (TextWriter tw = new StreamWriter(targetJsonPath))
+                {
+                    orderedTextInJsonFormat.ForEach(str =>
+                    {
+                        if (str == orderedTextInJsonFormat.First())
+                        {
+                            tw.Write("[{" + str + "}, ");
+                        }
+                        else if (str == orderedTextInJsonFormat.Last())
+                        {
+                            tw.Write("{" + str + "}]");
+
+                        }
+                        else
+                        {
+                            tw.Write("{" + str + "}, ");
+                        }
+                    });
+                }
+            }
+            else if (args.Contains(Argument.console.ToValidArgument()))
+            {
+                orderedTextInJsonFormat.ForEach(str =>
+                {
+                    if (str == orderedTextInJsonFormat.First())
+                    {
+                        Console.Write("[{" + str + "}, ");
+                    }
+                    else if (str == orderedTextInJsonFormat.Last())
+                    {
+                        Console.Write("{" + str + "}]");
+
+                    }
+                    else
+                    {
+                        Console.Write("{" + str + "}, ");
+                    }
+                });
             }
         }
 
@@ -113,7 +157,7 @@ namespace FileReaderWriter.CommandLineOperations
                 string shiftArgument = args.FirstOrDefault(arg => arg.Contains(Argument.shift.ToValidArgument()));
 
                 string directionArgument = args.FirstOrDefault(arg => arg.Contains(Argument.direction.ToValidArgument()));
-                
+
                 int shift = caesarDecryptor.GetShiftFromCommandLine(shiftArgument);
 
                 string direction = caesarDecryptor.GetDirectionFromCommandLine(directionArgument);
@@ -131,7 +175,7 @@ namespace FileReaderWriter.CommandLineOperations
                     formattedTextFromSourceFile = caesarDecryptor.RightShiftCipher(content, shift);
 
                     return formattedTextFromSourceFile;
-                }             
+                }
             }
 
             throw new FormatException($"You have specified wrong file format {format}");
@@ -139,11 +183,15 @@ namespace FileReaderWriter.CommandLineOperations
 
         private string GetTargetJsonFile(string targetArg)
         {
-            string format = Path.GetExtension(targetArg);
+            int pathIndex = targetArg.IndexOf('=') + 1;
 
-            if (format == FileFormat.json.ToValidFileFormat())
+            string targetJsonPath = targetArg.Substring(pathIndex);
+
+            string format = Path.GetExtension(targetJsonPath);
+
+            if (format == FileFormat.json.ToValidFileFormat() && File.Exists(targetJsonPath))
             {
-                return format;
+                return targetJsonPath;
             }
 
             throw new FormatException($"Only json format is valid. Wrong {format} format");

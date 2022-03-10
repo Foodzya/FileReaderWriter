@@ -9,10 +9,11 @@
             source,
             target,
             format,
-            path,
             shift,
             direction,
             repetitions,
+            console,
+            json
         }
     }
 }
