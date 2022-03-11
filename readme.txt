@@ -70,3 +70,23 @@ NOTE: myFile.etxt contains encrypted text. So first of all it will be decrypted 
     So after executing command line operation above targeFile.json will look like:
     "[ {the:3}, {lorem:2}, {ipsum:2}, {dummy:2}, {text:2}, {is:1}, {simply:1}, {of:1}, {printing:1}, {and:1}, {typesetting:1}, {industry:1}, {has:1}, {been:1}, {industry's:1}, {standard:1}, {ever:1}, {since:1}, {1500s:1} ]"
 
+In the following examples file Test.txt contains the following text: 
+"But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
+NOTE: If source file have .etxt format, you also have to specify two additional arguments: --shift= and --direction= for decryption purposes;  
+5) 
+Goal: to search "to" in the specified .txt file and write number of occurencies is the console;
+Solution:
+    FileReaderWriter.exe --search=to --source=C:\Txtfiles\Test.txt
+Result: 
+    The word "to" appears in the text 2 time(-s)
+6) 
+Goal: to  get a full list of words and the number of the repetitions and sort this list in descending order into json file;
+Solution:
+    FileReaderWriter.exe --repetitions --source=C:\Txtfiles\Text.txt --target=C:\Convertedfiles\Result.json --json
+Result: [ {who:3}, {a:3}, {has:2}, {to:2}, {pleasure:2}, {that:2}, {no:2}, {but:1}, {any:1}, {right:1}, {find:1}, {fault:1}, {with:1}, {man:1}, {chooses:1}, {enjoy:1}, {annoying:1}, {consequences:1}, {or:1}, {one:1}, {avoids:1}, {pain:1}, {produces:1}, {resultant:1} ]
+7) 
+Goal: print to console number of vowels and consonants in the specified source file;
+Solution:
+    FileReaderWriter.exe --vowels --source=C:\Txtfiles\Test.txt
+Result:
+    Vowels: 60, consonants: 81
