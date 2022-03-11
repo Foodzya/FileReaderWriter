@@ -12,11 +12,6 @@ namespace FileReaderWriter.WriteOptions
     {
         private IFileWriter _writer;
 
-        public FileWriter()
-        {
-
-        }
-
         public async Task WriteToFileAsync(string content, string targetFile)
         {
             SetWriterByFileExtension(targetFile);

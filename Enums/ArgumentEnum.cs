@@ -14,7 +14,8 @@
             repetitions,
             console,
             json,
-            search
+            search,
+            vowels
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using FileReaderWriter.Extensions;
 using FileReaderWriter.ReadOptions;
-using FileReaderWriter.TextManipulations;
 using FileReaderWriter.WriteOptions;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace FileReaderWriter.CommandLineOperations
 
             Task[] allTasks;
 
-            List<Argument> allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
+            List<Argument> allowedArguments = new List<Argument> { Argument.source, Argument.target, Argument.json, Argument.console, Argument.repetitions, Argument.shift, Argument.direction };
 
             string sourceFilePath;
 
@@ -66,7 +65,7 @@ namespace FileReaderWriter.CommandLineOperations
 
             sourceFilePath = sourceFilePathTask.Result;
 
-            textFromSourceFile = await GetTextFromSourceFile(sourceFilePath, args);
+            textFromSourceFile = await CommandLineReader.GetTextFromSourceFileAsync(sourceFilePath, args);
 
             Dictionary<string, int> keyValueOfRepetitiveWords = GetDictionaryOfRepetativeWords(textFromSourceFile);
 
@@ -75,7 +74,7 @@ namespace FileReaderWriter.CommandLineOperations
 
         private Dictionary<string, int> GetDictionaryOfRepetativeWords(string textFromSourceFile)
         {
-            char[] delimiterChars = { ' ', ',', '.', ':', ';', '\t', '\r', '\n', '—', '-', '"' };
+            char[] delimiterChars = { ' ', ',', '.', ':', ';', '!', '?', '\t', '\r', '\n', '—', '-', '"' };
 
             Dictionary<string, int> dictionaryWithRepetitiveWords = new Dictionary<string, int>();
 
@@ -102,7 +101,7 @@ namespace FileReaderWriter.CommandLineOperations
 
             TxtWriter txtWriter = new TxtWriter();
 
-            if (args.Contains(Argument.json.ToValidArgument()))
+            if (args.Contains(Argument.json.ToValidArgument()) && targetJsonPath != null)
             {
                 using (TextWriter tw = new StreamWriter(targetJsonPath))
                 {
@@ -145,53 +144,8 @@ namespace FileReaderWriter.CommandLineOperations
             }
             else
             {
-                throw new ArgumentException($"Command line must contain --json (along with --target= argument) or --console (--target argument not necessary)");
+                throw new ArgumentException("Command line must contain --json (along with --target= argument) or --console (--target argument not necessary)");
             }
-        }
-
-        private async Task<string> GetTextFromSourceFile(string sourceFilePath, string[] args)
-        {
-            string format = Path.GetExtension(sourceFilePath);
-
-            string formattedTextFromSourceFile;
-
-            FileReader fileReader = new FileReader();
-
-            CaesarEncryptor caesarDecryptor = new CaesarEncryptor();
-
-            if (format != FileFormat.etxt.ToValidFileFormat())
-            {
-                formattedTextFromSourceFile = await fileReader.ReadContentFromFileAsync(sourceFilePath);
-
-                return formattedTextFromSourceFile;
-            }
-            else
-            {
-                string shiftArgument = args.FirstOrDefault(arg => arg.Contains(Argument.shift.ToValidArgument()));
-
-                string directionArgument = args.FirstOrDefault(arg => arg.Contains(Argument.direction.ToValidArgument()));
-
-                int shift = caesarDecryptor.GetShiftFromCommandLine(shiftArgument);
-
-                string direction = caesarDecryptor.GetDirectionFromCommandLine(directionArgument);
-
-                string content = await File.ReadAllTextAsync(sourceFilePath);
-
-                if (direction == "left")
-                {
-                    formattedTextFromSourceFile = caesarDecryptor.LeftShiftCipher(content, shift);
-
-                    return formattedTextFromSourceFile;
-                }
-                else if (direction == "right")
-                {
-                    formattedTextFromSourceFile = caesarDecryptor.RightShiftCipher(content, shift);
-
-                    return formattedTextFromSourceFile;
-                }
-            }
-
-            throw new FormatException($"You have specified wrong file format {format}");
         }
 
         private string GetTargetJsonFile(string targetArg)
