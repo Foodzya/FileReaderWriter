@@ -32,11 +32,8 @@ namespace FileReaderWriter.WriteOptions
         private string GetEncryptedResult(string content)
         {
             MenuContext menuContext = new MenuContext();
-
             CaesarEncryptor encryptor = new CaesarEncryptor();
-
             string encryptedResult = string.Empty;
-
             int shift;
 
             Console.Clear();
@@ -76,7 +73,6 @@ namespace FileReaderWriter.WriteOptions
         private int GetCipherShift()
         {
             MenuContext menuContext = new MenuContext();
-
             int shift = 0;
 
             Console.WriteLine("\nCIPHER SHIFT MENU\n" +

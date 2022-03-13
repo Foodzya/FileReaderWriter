@@ -10,13 +10,14 @@ namespace FileReaderWriter.CommandLineOperations
 {
     public class TextSearcher
     {
+        readonly char[] delimiterChars = { ' ', ',', '.', ':', ';', '!', '?', '\t', '\r', '\n', '—', '-', '"' };
+
         public async Task SearchTextInFile(string[] args)
         {
             string searchWord = null;
-
             string sourceText = null;
-
-            List<Argument> allowedArguments = new List<Argument> { Argument.search, Argument.shift, Argument.direction, Argument.source };
+            string sourceFilePath = null;
+            var allowedArguments = new List<Argument> { Argument.search, Argument.shift, Argument.direction, Argument.source };
 
             foreach (var arg in args)
             {
@@ -26,9 +27,7 @@ namespace FileReaderWriter.CommandLineOperations
                 }
                 if (arg.Contains(Argument.source.ToValidArgument()))
                 {
-                    int sourcePathIndex = arg.IndexOf('=') + 1;
-
-                    string sourceFilePath = arg.Substring(sourcePathIndex);
+                    sourceFilePath = PathReader.GetPathFromCommandLineArgument(arg);
 
                     sourceText = await CommandLineReader.GetTextFromSourceFileAsync(sourceFilePath, args);
                 }
@@ -44,8 +43,6 @@ namespace FileReaderWriter.CommandLineOperations
 
         private void PrintNumberOfOccurences(string searchWord, string sourceText)
         {
-            char[] delimiterChars = { ' ', ',', '.', ':', ';', '!', '?', '\t', '\r', '\n', '—', '-', '"' };
-
             List<string> splitText = sourceText.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             int numberOfOccurences = splitText.Where(word => word.Equals(searchWord)).Count();

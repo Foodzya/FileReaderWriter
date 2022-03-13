@@ -17,17 +17,11 @@ namespace FileReaderWriter.WriteOptions
             if (Array.Exists(args, arg => arg == Argument.bulk.ToValidArgument()))
             {
                 string targetDirectory = string.Empty;
-
                 string fileFormat = string.Empty;
-
                 FileInfo[] txtFiles = null;
-
-                List<Argument> allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
-
+                var allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
                 Task<FileInfo[]> txtFilesTask = null;
-
                 Task<string> targetDirectoryTask = null;
-
                 Task<string> fileFormatTask = null;
 
                 for (int i = 0; i < args.Length; i++)
@@ -105,11 +99,8 @@ namespace FileReaderWriter.WriteOptions
                 if (Array.Exists(args, arg => arg.Contains(Argument.shift.ToValidArgument())) && Array.Exists(args, arg => arg.Contains(Argument.direction.ToValidArgument())))
                 {
                     string argument = string.Empty;
-
                     int shift = 0;
-
                     string direction = string.Empty;
-
                     CaesarEncryptor caesarEncryptor = new CaesarEncryptor();
 
                     Parallel.For(0, args.Length,

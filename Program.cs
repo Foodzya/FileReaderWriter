@@ -11,13 +11,10 @@ namespace FileReaderWriter
     {
         public static async Task Main(string[] args)
         {
-            int argsForBulkWriter = 4;
-
-            int argsForRepetitionCounter = 3;
-
-            int argsForVowelsCounter = 2;
-
-            int argsForSearchCounter = 2;
+            const int argsForBulkWriter = 4;
+            const int argsForRepetitionCounter = 3;
+            const int argsForVowelsCounter = 2;
+            const int argsForSearchCounter = 2;
 
             if (args.Length == 0 || args[0] == Argument.interactive.ToValidArgument())
             {
@@ -58,7 +55,7 @@ namespace FileReaderWriter
                             {
                                 RepetitionCounter repetitionCounter = new RepetitionCounter();
 
-                                repetitionCounter.WriteWordsToJsonInDescending(args);
+                                await repetitionCounter.WriteWordsToJsonInDescendingAsync(args);
                             }
                             else
                             {

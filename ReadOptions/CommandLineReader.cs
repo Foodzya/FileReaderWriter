@@ -13,13 +13,11 @@ namespace FileReaderWriter.ReadOptions
     {
         public static async Task<string> GetTextFromSourceFileAsync(string sourceFilePath, string[] args)
         {
-            string format = Path.GetExtension(sourceFilePath);
-
             string formattedTextFromSourceFile;
-
             FileReader fileReader = new FileReader();
-
             CaesarEncryptor caesarDecryptor = new CaesarEncryptor();
+
+            string format = Path.GetExtension(sourceFilePath);
 
             if (format != FileFormat.etxt.ToValidFileFormat())
             {

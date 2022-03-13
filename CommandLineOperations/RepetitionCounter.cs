@@ -13,21 +13,15 @@ namespace FileReaderWriter.CommandLineOperations
 {
     public class RepetitionCounter
     {
-        public async void WriteWordsToJsonInDescending(string[] args)
+        public async Task WriteWordsToJsonInDescendingAsync(string[] args)
         {
             Task<string> sourceFilePathTask = null;
-
             Task<string> targetJsonFileTask = null;
-
             Task[] allTasks;
-
-            List<Argument> allowedArguments = new List<Argument> { Argument.source, Argument.target, Argument.json, Argument.console, Argument.repetitions, Argument.shift, Argument.direction };
-
             string sourceFilePath;
-
             string targetJsonPath = null;
-
             string textFromSourceFile;
+            var allowedArguments = new List<Argument> { Argument.source, Argument.target, Argument.json, Argument.console, Argument.repetitions, Argument.shift, Argument.direction };
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -36,7 +30,7 @@ namespace FileReaderWriter.CommandLineOperations
                 switch (argument)
                 {
                     case string sourceArg when sourceArg.Contains(Argument.source.ToValidArgument()):
-                        sourceFilePathTask = Task.Factory.StartNew(() => GetSourceFilePath(sourceArg));
+                        sourceFilePathTask = Task.Factory.StartNew(() => PathReader.GetPathFromCommandLineArgument(sourceArg));
                         break;
                     case string targetArg when targetArg.Contains(Argument.target.ToValidArgument()):
                         targetJsonFileTask = Task.Factory.StartNew(() => GetTargetJsonFile(targetArg));
@@ -75,10 +69,12 @@ namespace FileReaderWriter.CommandLineOperations
         private Dictionary<string, int> GetDictionaryOfRepetativeWords(string textFromSourceFile)
         {
             char[] delimiterChars = { ' ', ',', '.', ':', ';', '!', '?', '\t', '\r', '\n', '—', '-', '"' };
-
             Dictionary<string, int> dictionaryWithRepetitiveWords = new Dictionary<string, int>();
 
-            List<string> listOfAllWords = textFromSourceFile.ToLower().Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> listOfAllWords = textFromSourceFile
+                .ToLower()
+                .Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
 
             listOfAllWords.ForEach(word =>
             {
@@ -97,28 +93,29 @@ namespace FileReaderWriter.CommandLineOperations
 
         private void WriteDictionaryToJsonFileInDescending(Dictionary<string, int> dictionaryWithRepetitiveWords, string targetJsonPath, string[] args)
         {
-            List<string> orderedTextInJsonFormat = dictionaryWithRepetitiveWords.OrderByDescending(word => word.Value).Select(keyValuePair => string.Format("{0}:{1}", keyValuePair.Key, keyValuePair.Value)).ToList();
-
             TxtWriter txtWriter = new TxtWriter();
+            List<string> orderedTextInJsonFormat = dictionaryWithRepetitiveWords
+                .OrderByDescending(word => word.Value)
+                .Select(keyValuePair => string.Format("{0}:{1}", keyValuePair.Key, keyValuePair.Value))
+                .ToList();
 
             if (args.Contains(Argument.json.ToValidArgument()) && targetJsonPath != null)
             {
                 using (TextWriter tw = new StreamWriter(targetJsonPath))
                 {
-                    orderedTextInJsonFormat.ForEach(str =>
+                    orderedTextInJsonFormat.ForEach(async str =>
                     {
                         if (str == orderedTextInJsonFormat.First())
                         {
-                            tw.Write("[ {" + str + "}, ");
+                            await tw.WriteAsync("[ {" + str + "}, ");
                         }
                         else if (str == orderedTextInJsonFormat.Last())
                         {
-                            tw.Write("{" + str + "} ]");
-
+                            await tw.WriteAsync("{" + str + "} ]");
                         }
                         else
                         {
-                            tw.Write("{" + str + "}, ");
+                            await tw.WriteAsync("{" + str + "}, ");
                         }
                     });
                 }
@@ -150,9 +147,7 @@ namespace FileReaderWriter.CommandLineOperations
 
         private string GetTargetJsonFile(string targetArg)
         {
-            int pathIndex = targetArg.IndexOf('=') + 1;
-
-            string targetJsonPath = targetArg.Substring(pathIndex);
+            string targetJsonPath = PathReader.GetPathFromCommandLineArgument(targetArg);
 
             string format = Path.GetExtension(targetJsonPath);
 
@@ -162,20 +157,6 @@ namespace FileReaderWriter.CommandLineOperations
             }
 
             throw new FormatException($"Only json format is valid. Wrong {format} format");
-        }
-
-        private string GetSourceFilePath(string sourceArg)
-        {
-            int pathIndex = sourceArg.IndexOf('=') + 1;
-
-            string path = sourceArg.Substring(pathIndex).Trim();
-
-            if (File.Exists(path))
-            {
-                return path;
-            }
-
-            throw new DirectoryNotFoundException($"Directory {path} doesn't exist");
         }
     }
 }

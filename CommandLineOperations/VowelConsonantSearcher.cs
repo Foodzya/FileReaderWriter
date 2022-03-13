@@ -9,11 +9,12 @@ namespace FileReaderWriter.CommandLineOperations
 {
     public class VowelConsonantSearcher
     {
+        readonly char[] vowels = { 'a', 'e', 'i', 'y', 'o', 'u' };
         public async void PrintNumberOfVowelsConsonants(string[] args)
-        {
-            List<Argument> allowedArguments = new List<Argument> { Argument.source, Argument.vowels, Argument.shift, Argument.direction };
-
+        {            
+            var allowedArguments = new List<Argument> { Argument.source, Argument.vowels, Argument.shift, Argument.direction };
             string sourceText = null;
+            string sourceFilePath = null;
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -22,8 +23,7 @@ namespace FileReaderWriter.CommandLineOperations
                 switch (argument)
                 {
                     case string sourceArg when sourceArg.Contains(Argument.source.ToValidArgument()):
-                        int sourcePathIndex = sourceArg.IndexOf('=') + 1;
-                        string sourceFilePath = sourceArg.Substring(sourcePathIndex);
+                        sourceFilePath = PathReader.GetPathFromCommandLineArgument(sourceArg);
                         sourceText = await CommandLineReader.GetTextFromSourceFileAsync(sourceFilePath, args);
                         break;
                     default:
@@ -33,11 +33,15 @@ namespace FileReaderWriter.CommandLineOperations
                 }
             }
 
-            char[] vowels = new char[] { 'a', 'e', 'i', 'y', 'o', 'u' };
+            int vowelCount = sourceText
+                .ToLower()
+                .Where(ch => vowels.Contains(ch))
+                .Count();
 
-            int vowelCount = sourceText.ToLower().Where(ch => vowels.Contains(ch)).Count();
-
-            int consonantCount = sourceText.ToLower().Where(ch => Char.IsLetter(ch) && !vowels.Contains(ch)).Count();
+            int consonantCount = sourceText
+                .ToLower()
+                .Where(ch => char.IsLetter(ch) && !vowels.Contains(ch))
+                .Count();
 
             Console.WriteLine($"Vowels: {vowelCount}, consonants: {consonantCount}");
         }
