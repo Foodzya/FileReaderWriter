@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FileReaderWriter.Extensions;
 using FileReaderWriter.ReadOptions;
 using static FileReaderWriter.Enums.ArgumentEnum;
@@ -10,7 +11,7 @@ namespace FileReaderWriter.CommandLineOperations
     public class VowelConsonantSearcher
     {
         readonly char[] vowels = { 'a', 'e', 'i', 'y', 'o', 'u' };
-        public async void PrintNumberOfVowelsConsonants(string[] args)
+        public async Task PrintNumberOfVowelsConsonants(string[] args)
         {            
             var allowedArguments = new List<Argument> { Argument.source, Argument.vowels, Argument.shift, Argument.direction };
             string sourceText = null;

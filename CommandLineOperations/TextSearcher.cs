@@ -23,7 +23,7 @@ namespace FileReaderWriter.CommandLineOperations
             {
                 if (arg.Contains(Argument.search.ToValidArgument()))
                 {
-                    searchWord = GetSearchWord(arg);                       
+                    searchWord = GetSearchWord(arg);
                 }
                 if (arg.Contains(Argument.source.ToValidArgument()))
                 {
@@ -34,7 +34,7 @@ namespace FileReaderWriter.CommandLineOperations
                 else
                 {
                     if (!allowedArguments.Any(allowedArg => arg.Contains(allowedArg.ToValidArgument())))
-                            throw new ArgumentException($"Wrong {arg} argument");
+                        throw new ArgumentException($"Wrong {arg} argument");
                 }
             }
 

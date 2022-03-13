@@ -19,7 +19,7 @@ namespace FileReaderWriter.WriteOptions
                 string targetDirectory = string.Empty;
                 string fileFormat = string.Empty;
                 FileInfo[] txtFiles = null;
-                var allowedArguments = Enum.GetValues(typeof(Argument)).Cast<Argument>().ToList();
+                var allowedArguments = new List<Argument> { Argument.bulk, Argument.source, Argument.target, Argument.format, Argument.shift, Argument.direction };
                 Task<FileInfo[]> txtFilesTask = null;
                 Task<string> targetDirectoryTask = null;
                 Task<string> fileFormatTask = null;

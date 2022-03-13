@@ -81,7 +81,7 @@ namespace FileReaderWriter
                             {
                                 VowelConsonantSearcher vowelConsonantSearcher = new VowelConsonantSearcher();
 
-                                vowelConsonantSearcher.PrintNumberOfVowelsConsonants(args);
+                                await vowelConsonantSearcher.PrintNumberOfVowelsConsonants(args);
                             }
                             else 
                             {
