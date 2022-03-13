@@ -9,9 +9,13 @@
             source,
             target,
             format,
-            path,
             shift,
-            direction
+            direction,
+            repetitions,
+            console,
+            json,
+            search,
+            vowels
         }
     }
 }

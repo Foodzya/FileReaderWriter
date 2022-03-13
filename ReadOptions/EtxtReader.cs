@@ -15,11 +15,8 @@ namespace FileReaderWriter.ReadOptions
         private string GetDecryptionResult(string content)
         {
             MenuContext menuContext = new MenuContext();
-
             CaesarEncryptor decryptor = new CaesarEncryptor();
-
             string decryptResult = string.Empty;
-
             int decryptionShift;
 
             Console.Clear();
@@ -54,8 +51,7 @@ namespace FileReaderWriter.ReadOptions
 
         private int GetCaesarCipherShift()
         {
-            MenuContext menuContext = new MenuContext();
-            
+            MenuContext menuContext = new MenuContext();            
             int decryptionShift = 0;
 
             Console.WriteLine("\nCAESAR CIPHER SHIFT MENU\n" +

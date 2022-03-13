@@ -1,3 +1,5 @@
+using System;
+
 namespace FileReaderWriter.TextManipulations
 {
     public class CaesarEncryptor
@@ -17,6 +19,42 @@ namespace FileReaderWriter.TextManipulations
             const int totalNumOfLetters = 26;
 
             return RightShiftCipher(content, totalNumOfLetters - shift);
+        }
+
+        public string GetDirectionFromCommandLine(string encryptorDirectionArgument)
+        {
+            int directionIndex = encryptorDirectionArgument.IndexOf('=') + 1;
+
+            string direction = encryptorDirectionArgument.Substring(directionIndex);
+
+            if (direction == "right" || direction == "left")
+            {
+                return direction;
+            }
+            else
+            {
+                throw new ArgumentException("--direction argument can have only 'right' or 'left' values");
+            }
+        }
+
+        public int GetShiftFromCommandLine(string encryptorShiftArgument)
+        {
+            int shiftIndex = encryptorShiftArgument.IndexOf('=') + 1;
+
+            int shift = 0;
+
+            string shiftAsString = encryptorShiftArgument.Substring(shiftIndex);
+
+            try
+            {
+                shift = int.Parse(shiftAsString);
+            }
+            catch
+            {
+                throw new FormatException($"Wrong {shiftAsString} argument");
+            }
+
+            return shift;
         }
 
         private char Cipher(char currentChar, int shift)
